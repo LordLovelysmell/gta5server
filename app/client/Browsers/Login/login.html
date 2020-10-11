@@ -1,0 +1,92 @@
+<html class="transparent-bg-4">
+<meta charset="utf-8">
+<script src="../index.js"></script>
+<script src="../libs/vue.js"></script>
+<script src="../libs/particles.min.js"></script>
+
+<body>
+  <div id="particles-js"></div>
+  <div id="app">
+    <div class="wrapper">
+      <div>
+        <h1>{{ appStatus }}</h1>
+        <p class="time">{{ currentTime }}</p>
+        <p class="version">version: {{ version }}</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+
+
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+      appStatus: 'Work in progress',
+      currentTime: null,
+      interval: null,
+      version: null
+    },
+    created() {
+      this.interval = setInterval(this.getCurrentTime, 1000)
+      this.version = Math.random() * 9999
+    },
+    beforeDestroy() {
+      clearInterval(this.interval)
+    },
+    methods: {
+      getCurrentTime() {
+        const today = new Date()
+        const h = today.getHours().toString()
+        const m = today.getMinutes().toString()
+        const s = today.getSeconds().toString()
+        let time = [h, m, s]
+        time = time.map(el => {
+          if (el.length < 2) {
+            el = `0${el}`
+          }
+          return el
+        })
+        this.currentTime = `${time[0]}:${time[1]}:${time[2]}`
+      }
+    }
+  })
+
+  particlesJS('particles-js', {
+    'particles': {
+      'number': { 'value': 25 },
+      'color': { 'value': '#ffffff' },
+      'shape': { 'type': 'circle', 'stroke': { 'width': 0, 'color': '#000000' } },
+      'opacity': { 'value': 1, 'random': true },
+      'size': { 'value': 1.5, 'random': false },
+      'line_linked': { 'enable': false, },
+      'move': { 'enable': true, 'speed': 1.5, 'direction': 'top-right', 'random': true, 'straight': false, 'out_mode': 'out', 'bounce': false, }
+    }
+  })
+</script>
+
+<style scoped>
+  h1 {
+    font-size: 72px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .wrapper {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .time {
+    margin-bottom: 120px;
+  }
+
+  .version {
+    color: #acacac;
+  }
+</style>
