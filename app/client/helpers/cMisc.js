@@ -84,7 +84,7 @@ mp.events.add(
 			injectCef(inject)
 		},
 
-		"cMisc-CallServerEvent": (eventName, id, price) => mp.events.callRemote(eventName, id, price),
+		"cMisc-CallServerEvent": data => mp.events.callRemote(data.eventName, data.data),
 
 		"cMisc-CallServerEvenWithTimeout": (eventName, timeout) => {
 			setTimeout(() => {

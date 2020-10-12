@@ -18,7 +18,7 @@ mp.events.add({
     "playerReady": async (player) => {
         player.spawn(new mp.Vector3(3222, 5376, 20))
         player.dimension = 1001
-        player.call("cLogin-ShowLoginWindow")
+        player.call("cLogin-ShowLoginPage")
     },
 
     "sLogin-processLogin": async (player, obj) => {

@@ -8,11 +8,18 @@
   <div id="particles-js" class="particles"></div>
   <div id="app">
     <div class="wrapper">
+      <button class="button button--small" @click="goToLoginPage">Назад</button>
       <div>
-        <h1>{{ appStatus }}</h1>
-        <!-- <p class="time">{{ currentTime }}</p> -->
-        <button class="button" @click="goToRegistrationPage">Регистрация</button>
-        <p class="version">version: {{ version }}</p>
+        <input v-model="player.email" type="email" class="input input_transparent-with-buttom-border"
+          placeholder="Email" autofocus>
+
+        <div>
+          <input v-model="player.password1" type="password" class="input input_transparent-with-buttom-border"
+            placeholder="Пароль">
+          <input v-model="player.password2" type="password" class="input input_transparent-with-buttom-border"
+            placeholder="Подтверждение пароля">
+          <button class="button" @click="register">Зарегистрироваться!</button>
+        </div>
       </div>
     </div>
   </div>
@@ -25,35 +32,18 @@
   const app = new Vue({
     el: '#app',
     data: {
-      appStatus: 'Welcome!',
-      currentTime: null,
-      interval: null,
-      version: null
+      player: {
+        email: '',
+        password1: '',
+        password2: '',
+      }
     },
-    created() {
-      // this.interval = setInterval(this.getCurrentTime, 1000)
-      this.version = Math.random() * 9999
-    },
-    // beforeDestroy() {
-    //   clearInterval(this.interval)
-    // },
     methods: {
-      // getCurrentTime() {
-      //   const today = new Date()
-      //   const h = today.getHours().toString()
-      //   const m = today.getMinutes().toString()
-      //   const s = today.getSeconds().toString()
-      //   let time = [h, m, s]
-      //   time = time.map(el => {
-      //     if (el.length < 2) {
-      //       el = `0${el}`
-      //     }
-      //     return el
-      //   })
-      //   this.currentTime = `${time[0]}:${time[1]}:${time[2]}`
-      // },
-      goToRegistrationPage() {
-        mp.trigger('cLogin-ShowRegistrationPage');
+      goToLoginPage() {
+        mp.trigger('cLogin-ShowLoginPage')
+      },
+      register() {
+        mp.trigger('cMisc-CallServerEvent', { eventName: 'sRegister-Register', data: JSON.stringify(this.player) })
       }
     }
   })
@@ -77,26 +67,16 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 100%;
-  }
-
-  h1 {
-    font-size: 72px;
-    font-weight: 500;
-    margin-bottom: 120px;
   }
 
   .wrapper {
+    position: relative;
     display: flex;
     height: 100%;
     width: 100%;
     align-items: center;
     justify-content: center;
-  }
-
-  .time {
-    margin-bottom: 120px;
+    z-index: 1000;
   }
 
   .button {
@@ -114,11 +94,15 @@
     z-index: 1000;
   }
 
-  .button:hover {
-    transform: scale(1.1);
+  .button--small {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    font-size: 16px;
+    padding: 10px 35px;
   }
 
-  .version {
-    color: #acacac;
+  .button:hover {
+    transform: scale(1.1);
   }
 </style>
