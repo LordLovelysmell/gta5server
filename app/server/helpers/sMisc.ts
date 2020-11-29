@@ -11,7 +11,7 @@ logger.error('Cheese %s is too ripe!', 'gouda');
 logger.fatal('Cheese was breeding ground for listeria.');
 */
 
-export default class MiscSingleton {
+class MiscSingleton {
   log: any;
   constructor() {
     log4js.configure({

@@ -4,7 +4,7 @@ const player = mp.players.local
 
 export function prettify(num) {
 	const n = num.toString()
-	const separator = " "
+	const separator = ' '
 	return n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, `$1${separator}`)
 }
 
@@ -30,7 +30,7 @@ export function injectCef(execute) {
 export function openCef(url) {
 	if (cef) cef.destroy()
 	cef = mp.browsers.new(url)
-	injectCef("loadRusLang()")
+	// injectCef('loadRusLang()')
 }
 
 
@@ -48,7 +48,7 @@ export function closeCef() {
 
 // CAMERA //
 export function createCam(x, y, z, rx, ry, rz, viewangle) {
-	camera = mp.cameras.new("Cam", { x, y, z }, { x: rx, y: ry, z: rz }, viewangle)
+	camera = mp.cameras.new('Cam', { x, y, z }, { x: rx, y: ry, z: rz }, viewangle)
 	camera.setActive(true)
 	mp.game.cam.renderScriptCams(true, true, 20000000000000000000000000, false, false)
 }
@@ -56,7 +56,7 @@ export function createCam(x, y, z, rx, ry, rz, viewangle) {
 export function destroyCam() {
 	if (!camera) return
 	camera.setActive(false)
-	mp.game.cam.renderScriptCams(false, true, 0, true, true)
+	mp.game.cam.renderScriptCams(false, false, 0, false, false)
 	camera.destroy()
 	camera = null
 }
@@ -64,29 +64,32 @@ export function destroyCam() {
 
 mp.events.add(
 	{
-		"cInjectCef": execute => injectCef(execute),
-		"cCloseCef": () => closeCef(),
-		"cDestroyCam": () => destroyCam(),
+		'cInjectCef': execute => injectCef(execute),
+		'cCloseCef': () => closeCef(),
+		'cDestroyCam': () => destroyCam(),
 
-		"cCloseCefAndDestroyCam": () => {
+		'cCloseCefAndDestroyCam': () => {
 			closeCef()
 			destroyCam()
+			console.log('cCloseCefAndDestroyCamevent')
 		},
 
-		"cChangeHeading": angle => player.setHeading(angle),
+		'cChangeHeading': angle => player.setHeading(angle),
 
-		"cMisc-CreateChooseWindow": (lang, execute, confirmEvent, rejectEvent) => {
+		'cMisc-CreateChooseWindow': (lang, execute, confirmEvent, rejectEvent) => {
 			prepareToCef(500)
-			openCef("package://RP/Browsers/Misc/chooseWindow.html", lang)
+			openCef('package://RP/Browsers/Misc/chooseWindow.html', lang)
 			const str1 = `app.confirmEvent = '${confirmEvent}'`
 			const str2 = `app.rejectEvent = '${rejectEvent}'`
 			const inject = execute + str1 + str2
 			injectCef(inject)
 		},
 
-		"cMisc-CallServerEvent": data => mp.events.callRemote(data.eventName, data.data),
+		'cMisc-CallServerEvent': (eventName, data) => {
+			mp.events.callRemote(eventName, data)
+		},
 
-		"cMisc-CallServerEvenWithTimeout": (eventName, timeout) => {
+		'cMisc-CallServerEvenWithTimeout': (eventName, timeout) => {
 			setTimeout(() => {
 				mp.events.callRemote(eventName)
 			}, timeout)

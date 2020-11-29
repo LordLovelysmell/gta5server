@@ -10,8 +10,8 @@
     <div class="wrapper">
       <button class="button button--small" @click="goToLoginPage">Назад</button>
       <div>
-        <input v-model="player.email" type="email" class="input input_transparent-with-buttom-border"
-          placeholder="Email" autofocus>
+        <input v-model="player.login" type="text" class="input input_transparent-with-buttom-border" placeholder="Login"
+          autofocus>
 
         <div>
           <input v-model="player.password1" type="password" class="input input_transparent-with-buttom-border"
@@ -33,7 +33,7 @@
     el: '#app',
     data: {
       player: {
-        email: '',
+        login: '',
         password1: '',
         password2: '',
       }
@@ -43,7 +43,7 @@
         mp.trigger('cLogin-ShowLoginPage')
       },
       register() {
-        mp.trigger('cMisc-CallServerEvent', { eventName: 'sRegister-Register', data: JSON.stringify(this.player) })
+        mp.trigger('cMisc-CallServerEvent', 'sRegister-Register', JSON.stringify(this.player))
       }
     }
   })

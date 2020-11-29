@@ -5,7 +5,7 @@ class MailerSingletone {
     this.createTransport()
   }
 
-  createTransport() {
+  async createTransport() {
     let testAccount = await nodemailer.createTestAccount();
 
     this.transporter = nodemailer.createTransport({

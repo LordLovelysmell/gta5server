@@ -1,0 +1,11 @@
+{
+	"maxplayers": 100,
+	"name": "Shadowalker Server",
+	"bind": "213.139.210.167",
+	"gamemode": "roleplay",
+	"stream-distance": 500.0,
+	"announce": true,
+	"port": 22005,
+	"allow-cef-debugging": true,
+	"node-commandline-flags": "--inspect"
+}
