@@ -1,6 +1,6 @@
 node_modules
-packages/*
-client_packages/*
+packages
+client_packages
 /BugTrap-x64.dll
 /serverLogs.log
 /dotnet
