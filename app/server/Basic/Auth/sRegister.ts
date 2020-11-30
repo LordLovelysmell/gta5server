@@ -21,7 +21,7 @@ class Registration {
       dim: 0,
     }
 
-    const regdate = new Date().toLocaleString()
+    const regdate = misc.convertDateToMYSQLFormat(new Date())
 
     await misc.query(`INSERT INTO players 
     (login, password, ip, regdate, position, socialclub) VALUES 

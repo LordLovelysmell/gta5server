@@ -121,6 +121,10 @@ class MiscSingleton {
     return JSON.stringify(obj);
   }
 
+  convertDateToMYSQLFormat(date: Date) {
+    return date.toISOString().slice(0, 19).replace('T', ' ');
+  }
+
 }
 const miscSingleton = new MiscSingleton();
 module.exports = miscSingleton;

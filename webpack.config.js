@@ -29,7 +29,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'app/client/Browsers', to: 'client_packages/RP/Browsers' }
+        { from: 'app/client/Browsers/Web/gta5-vue/dist', to: 'client_packages/RP/Browsers' }
       ]
     })
   ]
