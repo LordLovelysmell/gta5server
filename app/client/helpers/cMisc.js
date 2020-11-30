@@ -20,7 +20,6 @@ export function injectCef(execute) {
 export function openCef(url) {
 	if (cef) cef.destroy()
 	cef = mp.browsers.new(url)
-	// injectCef('loadRusLang()')
 }
 
 
@@ -68,7 +67,6 @@ mp.events.add(
 		'cCloseCefAndDestroyCam': () => {
 			closeCef()
 			destroyCam()
-			console.log('cCloseCefAndDestroyCamevent')
 		},
 
 		'cChangeHeading': angle => player.setHeading(angle),

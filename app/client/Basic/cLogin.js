@@ -11,7 +11,7 @@ class ClientLogin {
 				misc.openCef('package://RP/Browsers/index.html')
 			},
 			'cLogin-sendAuthResponse': (string) => {
-				misc.browserExecute(`appData.commit('auth/setAlertMessage', ${string});`)
+				misc.browserExecute(`appData.commit('auth/setAlertMessage', '${string}');`)
 			},
 		})
 	}

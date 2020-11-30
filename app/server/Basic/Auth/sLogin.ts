@@ -7,16 +7,11 @@ class ServerLogin {
     const { login, password } = JSON.parse(loginData)
     const response = await misc.query(`SELECT id, login, password, position, socialclub FROM players WHERE login = '${login}' LIMIT 1`)
 
-    misc.log.debug(`LoginData: ${loginData}`)
-    misc.log.debug(`Response: ${response}`)
-
     if (!response[0]) {
-      misc.log.debug(`Данный аккаунт не существует.`)
       player.call("cLogin-sendAuthResponse", ["Данный аккаунт не существует."])
       return
     }
     if (response[0].password !== password) {
-      misc.log.debug(`Неверный пароль.`)
       player.call("cLogin-sendAuthResponse", ["Неверный пароль."])
       return
     }

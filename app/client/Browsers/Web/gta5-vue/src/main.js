@@ -7,3 +7,7 @@ createApp(App)
   .use(store)
   .use(router)
   .mount("#app");
+
+global.app = App;
+global.appData = store;
+global.router = router;
