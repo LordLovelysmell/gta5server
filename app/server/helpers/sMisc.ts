@@ -1,5 +1,5 @@
 const log4js = require('log4js');
-const mysql = require('./sMysql');
+const connection = require('./sMysql');
 
 /*
 logger.trace('Entering cheese testing');
@@ -25,8 +25,9 @@ class MiscSingleton {
     this.log.fatal('Server Started');
   }
 
-  dbquery(query: string) {
-    return new Promise((r, j) => mysql.query(query, null, (err: any, data: any) => {
+  dbquery(query: string, parameters?: any) {
+    console.log(parameters)
+    return new Promise((r, j) => connection.query(query, parameters || null, (err: any, data: any) => {
       if (err) {
         this.log.error(query);
         return j(err);
@@ -35,9 +36,9 @@ class MiscSingleton {
     }))
   }
 
-  async query(query: string) {
+  async query(query: string, parameters?: any) {
     const start = new Date().getTime();
-    const data = await this.dbquery(query);
+    const data = await this.dbquery(query, parameters);
     const time = new Date().getTime() - start;
     if (time >= 500) {
       this.log.warn(`'${query}' ends with: ${time / 1000}s`);
@@ -46,6 +47,10 @@ class MiscSingleton {
       this.log.trace(`'${query}' ends with: ${time / 1000}s`);
     }
     return data;
+  }
+
+  escape(userData: string) {
+    return connection.escape(userData)
   }
 
   roundNum(number: number, ends = 0) {

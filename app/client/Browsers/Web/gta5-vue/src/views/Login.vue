@@ -2,7 +2,7 @@
   <div class="login">
     <modal>
       <div class="text-light">
-        <h1 class="mb-4 text-center">Ardent RP</h1>
+        <img class="logo" src="@/assets/logo.png" alt="" />
         <p class="description text-center">
           Добро пожаловать на Ardent RP. Войдите в свой аккаунт или
           зарегистрируйте новый.
@@ -74,7 +74,7 @@ export default {
 
       // eslint-disable-next-line
       mp.trigger(
-        "cMisc-CallServerEvent",
+        "callServerEvent",
         "sLogin-processLogin",
         JSON.stringify(user)
       );
@@ -90,5 +90,10 @@ export default {
 .description {
   max-width: 300px;
   margin: 0 auto 20px;
+}
+.logo {
+  width: 300px;
+  margin: 0 auto 15px;
+  display: block;
 }
 </style>

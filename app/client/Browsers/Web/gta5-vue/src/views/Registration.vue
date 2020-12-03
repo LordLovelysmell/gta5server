@@ -2,7 +2,7 @@
   <div class="login">
     <modal>
       <div class="text-light">
-        <h1 class="mb-4 text-center">Ardent RP</h1>
+        <img class="logo" src="@/assets/logo.png" alt="" />
         <h4 class="text-center mb-3">Регистрация</h4>
 
         <form class="form mb-2">
@@ -94,7 +94,7 @@ export default {
 
       // eslint-disable-next-line
       mp.trigger(
-        "cMisc-CallServerEvent",
+        "callServerEvent",
         "sRegister-Register",
         JSON.stringify(user)
       );
@@ -120,5 +120,10 @@ export default {
 .description {
   max-width: 300px;
   margin: 0 auto 20px;
+}
+.logo {
+  width: 300px;
+  margin: 0 auto 15px;
+  display: block;
 }
 </style>

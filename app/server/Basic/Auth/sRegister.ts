@@ -1,4 +1,6 @@
 const misc = require('../../helpers/sMisc')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class Registration {
   async attemptRegistration(player: PlayerMp, obj: string) {
@@ -7,11 +9,13 @@ class Registration {
   }
 
   async createAccount(player: PlayerMp, d: any) {
-    console.log('createAccount method, player:', player)
 
     const { login, password } = d
 
-    console.log(login, password)
+    const escapedData = {
+      login: misc.escape(login).replace(/\'/g, ''),
+      password: misc.escape(password)
+    }
 
     const firstSpawn = {
       x: -164,
@@ -21,18 +25,26 @@ class Registration {
       dim: 0,
     }
 
-    const regdate = misc.convertDateToMYSQLFormat(new Date())
+    bcrypt.hash(password, saltRounds, function (err: any, hash: string) {
+      try {
+        misc.query('INSERT INTO players (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
+          [escapedData.login, hash, player.ip, player.ip, JSON.stringify(firstSpawn), player.socialClub])
 
-    await misc.query(`INSERT INTO players 
-    (login, password, ip, regdate, position, socialclub) VALUES 
-    ('${login}', '${password}', '${player.ip}', '${regdate}', '${JSON.stringify(firstSpawn)}', '${player.socialClub}')`);
+        if (err) {
+          misc.log.debug('Error during creating account')
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    });
 
-    misc.log.debug(`New Account: ${login} | ${regdate}`)
+    misc.log.debug(`New account created: ${login}`)
 
-    const coords = misc.getPlayerCoordJSON(player)
-    player.spawn(new mp.Vector3(coords.x, coords.y, coords.z))
+    // player.call('cCharacterCreator-prepareCharacterCreator')
 
-    player.call('cCloseCefAndDestroyCam')
+    // player.spawn(new mp.Vector3(firstSpawn.x, firstSpawn.y, firstSpawn.z))
+
+    // player.call('cCloseCefAndDestroyCam')
   }
 }
 
