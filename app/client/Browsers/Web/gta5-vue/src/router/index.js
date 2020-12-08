@@ -26,10 +26,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "main" */ "../views/Main.vue"),
     children: [
       {
-        path: "/character-creator",
-        name: "character-creator",
+        path: "/character-editor",
+        name: "character-editor",
         component: () =>
-          import( /* webpackChunkName: "character-creator" */ '../views/CharacterCreator.vue')
+          import( /* webpackChunkName: "character-editor" */ '../views/CharacterEditor.vue')
       },
     ],
   },

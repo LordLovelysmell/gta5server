@@ -40,11 +40,7 @@ class Registration {
 
     misc.log.debug(`New account created: ${login}`)
 
-    // player.call('cCharacterCreator-prepareCharacterCreator')
-
-    // player.spawn(new mp.Vector3(firstSpawn.x, firstSpawn.y, firstSpawn.z))
-
-    // player.call('cCloseCefAndDestroyCam')
+    player.call('cCharacterEditor-prepareCharacterEditor')
   }
 }
 

@@ -6,7 +6,7 @@
 // Color system
 
 $white:    #fff !default;
-$gray-100: #f8f9fa !default;
+$gray-100: #f3f3f3 !default;
 $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
@@ -15,7 +15,7 @@ $gray-600: #6c757d !default;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
-$black:    #000 !default;
+$black:    #181818 !default;
 
 $grays: () !default;
 $grays: map-merge(
@@ -33,21 +33,21 @@ $grays: map-merge(
   $grays
 );
 
-$blue:    #007bff !default;
+$red-wine:#9D2C4E !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
-$pink:    #e83e8c !default;
+$pink:    #DF7495 !default;
 $red:     #dc3545 !default;
 $orange:  #fd7e14 !default;
 $yellow:  #ffc107 !default;
-$green:   #28a745 !default;
+$green:   #85A62E !default;
 $teal:    #20c997 !default;
 $cyan:    #17a2b8 !default;
 
 $colors: () !default;
 $colors: map-merge(
   (
-    "blue":       $blue,
+    "red-wine":   $red-wine,
     "indigo":     $indigo,
     "purple":     $purple,
     "pink":       $pink,
@@ -64,8 +64,9 @@ $colors: map-merge(
   $colors
 );
 
-$primary:       $blue !default;
-$secondary:     $gray-600 !default;
+$primary:       $red-wine !default;
+$secondary:     $gray-100 !default;
+$tertiary:      $pink !default;
 $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
@@ -78,6 +79,7 @@ $theme-colors: map-merge(
   (
     "primary":    $primary,
     "secondary":  $secondary,
+    "tertiary":   $tertiary,
     "success":    $success,
     "info":       $info,
     "warning":    $warning,
@@ -237,7 +239,7 @@ $line-height-sm:              1.5 !default;
 $border-width:                1px !default;
 $border-color:                $gray-300 !default;
 
-$border-radius:               .25rem !default;
+$border-radius:               10px !default;
 $border-radius-lg:            .3rem !default;
 $border-radius-sm:            .2rem !default;
 

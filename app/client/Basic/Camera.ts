@@ -22,4 +22,12 @@ export class Camera {
   setActive(isActive: boolean) {
     this.camera.setActive(isActive)
   }
+
+  setCoord(x: number, y: number, z: number) {
+    this.camera.setCoord(x, y, z)
+  }
+
+  pointAtCoord(x: number, y: number, z: number) {
+    this.camera.pointAtCoord(x, y, z)
+  }
 }

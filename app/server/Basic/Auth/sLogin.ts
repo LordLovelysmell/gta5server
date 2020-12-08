@@ -42,7 +42,7 @@ const serverLogin = new ServerLogin()
 mp.events.add({
   "playerReady": async (player) => {
     player.spawn(new mp.Vector3(3222, 5376, 20))
-    player.dimension = 1001
+    player.dimension = player.id + 2000
     player.call("cLogin-initLogin")
   },
 

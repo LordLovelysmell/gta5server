@@ -1,11 +1,11 @@
-import { IBrowser } from './types/IBrowser'
+import { BrowserState, ScreenState } from './types/BrowserState'
 
-export class Browser implements IBrowser {
+export class Browser implements BrowserState {
   browser: BrowserMp
   isCursorVisible: boolean
 
   constructor({ url = '' }: { url: string }) {
-    this.setScreenState({ isBrowserView: true })
+    this.setScreenState({ showChat: false, showCursor: true, showRadar: false, isBlurred: true })
 
     this.browser = mp.browsers.new(url)
     this.isCursorVisible = false
@@ -16,17 +16,17 @@ export class Browser implements IBrowser {
       return
     }
     this.browser.destroy()
-    this.setScreenState({ isBrowserView: false })
+    this.setScreenState({ showChat: true, showCursor: true, showRadar: true, isBlurred: false })
   }
 
-  setScreenState({ isBrowserView }: { isBrowserView: boolean }): void {
-    mp.gui.chat.show(!isBrowserView)
+  setScreenState({ showChat, showCursor, showRadar, isBlurred }: ScreenState): void {
+    mp.gui.chat.show(showChat)
     setTimeout(() => { // fix of invisible cursor
-      mp.gui.cursor.show(isBrowserView, isBrowserView)
+      mp.gui.cursor.show(showCursor, showCursor)
     }, 1)
-    mp.game.ui.displayRadar(!isBrowserView)
+    mp.game.ui.displayRadar(showRadar)
 
-    if (isBrowserView) {
+    if (isBlurred) {
       mp.game.graphics.transitionToBlurred(1)
     } else {
       mp.game.graphics.transitionFromBlurred(1)
