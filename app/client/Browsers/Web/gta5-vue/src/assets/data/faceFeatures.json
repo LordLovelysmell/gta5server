@@ -1,0 +1,117 @@
+[
+  {
+    "blockName": "Нос",
+    "blockSelectors": [
+      {
+        "index": 0,
+        "name": "Ширина носа"
+      },
+      {
+        "index": 1,
+        "name": "Высота носа"
+      },
+      {
+        "index": 2,
+        "name": "Длина носа"
+      },
+      {
+        "index": 3,
+        "name": "Переносица"
+      },
+      {
+        "index": 4,
+        "name": "Кончик носа"
+      },
+      {
+        "index": 5,
+        "name": "Смещение"
+      }
+    ]
+  },
+  {
+    "blockName": "Брови",
+    "blockSelectors": [
+      {
+        "index": 6,
+        "name": "Высота"
+      },
+      {
+        "index": 7,
+        "name": "Ширина"
+      }
+    ]
+  },
+  {
+    "blockName": "Скулы и щеки",
+    "blockSelectors": [
+      {
+        "index": 8,
+        "name": "Высота скул"
+      },
+      {
+        "index": 9,
+        "name": "Ширина скул"
+      },
+      {
+        "index": 10,
+        "name": "Ширина щек"
+      }
+    ]
+  },
+  {
+    "blockName": "Глаза и губы",
+    "blockSelectors": [
+      {
+        "index": 11,
+        "name": "Глаза"
+      },
+      {
+        "index": 12,
+        "name": "Губы"
+      }
+    ]
+  },
+  {
+    "blockName": "Челюсть",
+    "blockSelectors": [
+      {
+        "index": 13,
+        "name": "Ширина"
+      },
+      {
+        "index": 14,
+        "name": "Высота"
+      }
+    ]
+  },
+  {
+    "blockName": "Подбородок",
+    "blockSelectors": [
+      {
+        "index": 15,
+        "name": "Длина"
+      },
+      {
+        "index": 17,
+        "name": "Ширина"
+      },
+      {
+        "index": 16,
+        "name": "Позиция"
+      },
+      {
+        "index": 18,
+        "name": "Форма"
+      }
+    ]
+  },
+  {
+    "blockName": "Шея",
+    "blockSelectors": [
+      {
+        "index": 19,
+        "name": "Ширина шеи"
+      }
+    ]
+  }
+]

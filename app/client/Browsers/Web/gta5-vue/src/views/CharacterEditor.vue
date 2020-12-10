@@ -43,16 +43,18 @@
           />
         </div>
         <div class="step-wrapper" v-show="currentStep === 1">
-          <div v-for="(selector, index) in selectors" :key="index" class="mb15">
+          <div
+            v-for="(feature, index) in faceFeaturesList"
+            :key="index"
+            class="mb15"
+          >
             <div
               class="subtitle-wrapper subtitle-wrapper--inner d-flex align-items-center bg-white mb5"
             >
-              <span class="subtitle text-primary">{{
-                selector.blockName
-              }}</span>
+              <span class="subtitle text-primary">{{ feature.blockName }}</span>
             </div>
             <base-range-selector
-              v-for="blockSelector in selector.blockSelectors"
+              v-for="blockSelector in feature.blockSelectors"
               :key="blockSelector.index"
               class="mb5"
               :name="blockSelector.name"
@@ -91,6 +93,7 @@ import BaseSelector from "@/components/BaseSelector.vue";
 import BaseRangeSelector from "@/components/BaseRangeSelector.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import Inheritance from "@/components/character-editor/Inheritance.vue";
+import faceFeaturesList from "@/assets/data/faceFeatures.json";
 
 export default {
   name: "CharacterEditor",
@@ -124,124 +127,12 @@ export default {
           name: "Женский",
         },
       ],
-      selectors: [
-        {
-          blockName: "Нос",
-          blockSelectors: [
-            {
-              index: 0,
-              name: "Ширина носа",
-            },
-            {
-              index: 1,
-              name: "Высота носа",
-            },
-            {
-              index: 2,
-              name: "Длина носа",
-            },
-            {
-              index: 3,
-              name: "Переносица",
-            },
-            {
-              index: 4,
-              name: "Кончик носа",
-            },
-            {
-              index: 5,
-              name: "Смещение",
-            },
-          ],
-        },
-        {
-          blockName: "Брови",
-          blockSelectors: [
-            {
-              index: 6,
-              name: "Высота носа",
-            },
-            {
-              index: 7,
-              name: "Ширина носа",
-            },
-          ],
-        },
-        {
-          blockName: "Скулы и щеки",
-          blockSelectors: [
-            {
-              index: 8,
-              name: "Высота скул",
-            },
-            {
-              index: 9,
-              name: "Ширина скул",
-            },
-            {
-              index: 10,
-              name: "Ширина щек",
-            },
-          ],
-        },
-        {
-          blockName: "Глаза и губы",
-          blockSelectors: [
-            {
-              index: 11,
-              name: "Глаза",
-            },
-            {
-              index: 12,
-              name: "Губы",
-            },
-          ],
-        },
-        {
-          blockName: "Челюсть",
-          blockSelectors: [
-            {
-              index: 13,
-              name: "Ширина",
-            },
-            {
-              index: 14,
-              name: "Высота",
-            },
-          ],
-        },
-        {
-          blockName: "Подбородок",
-          blockSelectors: [
-            {
-              index: 15,
-              name: "Длина",
-            },
-            {
-              index: 17,
-              name: "Ширина",
-            },
-            {
-              index: 16,
-              name: "Позиция",
-            },
-            {
-              index: 18,
-              name: "Форма",
-            },
-          ],
-        },
-        {
-          blockName: "Шея",
-          blockSelectors: [
-            {
-              index: 19,
-              name: "Ширина шеи",
-            },
-          ],
-        },
-      ],
     };
+  },
+  computed: {
+    faceFeaturesList() {
+      return faceFeaturesList;
+    },
   },
   mounted() {
     if (!this.$appConfig.isDev) {
