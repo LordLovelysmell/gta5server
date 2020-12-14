@@ -23,7 +23,7 @@
       <span
         class="text text-center"
         :class="{ 'fix-width': fixOptionNameWidth }"
-        >{{ currentOption.name }}</span
+        >{{ currentOption.name || currentOption }}</span
       >
       <div class="arrow d-flex align-items-center" @click="chooseNextOption">
         <svg
@@ -66,6 +66,11 @@ export default {
       required: false,
       default: false,
     },
+    id: {
+      type: Number,
+      required: false,
+      default: -1,
+    },
   },
   mounted() {
     this.currentOption = this.options[this.currentOptionIndex];
@@ -79,7 +84,9 @@ export default {
       }
       this.currentOption = this.options[this.currentOptionIndex];
 
-      this.$emit("option-change", this.currentOption);
+      const currentOption = this.processCurrentOption();
+
+      this.$emit("option-change", currentOption);
     },
     chooseNextOption() {
       if (this.currentOptionIndex === this.options.length - 1) {
@@ -89,7 +96,20 @@ export default {
       }
       this.currentOption = this.options[this.currentOptionIndex];
 
-      this.$emit("option-change", this.currentOption);
+      const currentOption = this.processCurrentOption();
+
+      this.$emit("option-change", currentOption);
+    },
+    processCurrentOption() {
+      if (this.id === -1) {
+        return this.currentOption;
+      }
+      debugger;
+      return {
+        id: this.id,
+        chosenOption: this.currentOption,
+        type: this.currentOption.type || "selector",
+      };
     },
   },
 };

@@ -50,4 +50,17 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #df7495;
 }
+
+.mb5 {
+  margin-bottom: 5px;
+}
+.mb15 {
+  margin-bottom: 15px;
+}
+.px35 {
+  padding: 0 35px;
+}
+.pointer {
+  cursor: pointer;
+}
 </style> 

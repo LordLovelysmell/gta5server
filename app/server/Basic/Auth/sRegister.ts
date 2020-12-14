@@ -25,11 +25,14 @@ class Registration {
       dim: 0,
     }
 
-    bcrypt.hash(password, saltRounds, function (err: any, hash: string) {
+    bcrypt.hash(password, saltRounds, async function (err: any, hash: string) {
       try {
-        misc.query('INSERT INTO players (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
+        const id = await misc.query('INSERT INTO players (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
           [escapedData.login, hash, player.ip, player.ip, JSON.stringify(firstSpawn), player.socialClub])
 
+        if (id) {
+          player.setVariable('guid', id)
+        }
         if (err) {
           misc.log.debug('Error during creating account')
         }

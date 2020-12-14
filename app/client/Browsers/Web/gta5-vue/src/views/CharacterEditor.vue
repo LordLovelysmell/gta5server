@@ -70,6 +70,20 @@
             />
           </div>
         </div>
+        <div class="step-wrapper" v-show="currentStep === 2">
+          <head-overlay @head-overlay-data-set="onOptionChange" />
+        </div>
+        <div class="step-wrapper" v-show="currentStep === 3">
+          <base-selector
+            v-for="(variation, index) of variations"
+            :key="index"
+            :id="variation.id"
+            class="mb5"
+            :name="variation.name"
+            :options="variation.options"
+            @option-change="onOptionChange"
+          />
+        </div>
       </div>
       <div class="px35 d-flex align-items-center justify-content-between">
         <span
@@ -80,9 +94,9 @@
           @click="goToPrevStep"
           >Назад</span
         >
-        <base-button :is-disabled="currentStep >= 1" @click="gotToNextStep"
-          >Далее</base-button
-        >
+        <base-button @click="gotToNextStep">
+          {{ currentStep !== stepNames.length - 1 ? "Далее" : "Завершить" }}
+        </base-button>
       </div>
     </div>
   </div>
@@ -93,6 +107,7 @@ import BaseSelector from "@/components/BaseSelector.vue";
 import BaseRangeSelector from "@/components/BaseRangeSelector.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import Inheritance from "@/components/character-editor/Inheritance.vue";
+import HeadOverlay from "@/components/character-editor/HeadOverlay.vue";
 import faceFeaturesList from "@/assets/data/faceFeatures.json";
 
 export default {
@@ -102,10 +117,11 @@ export default {
     BaseRangeSelector,
     BaseButton,
     Inheritance,
+    HeadOverlay,
   },
   data: function () {
     return {
-      stepNames: ["Общее", "Лицо"],
+      stepNames: ["Общее", "Черты лица", "Лицо", "Стиль"],
       currentStep: 0,
       character: {
         gender: 0,
@@ -114,6 +130,8 @@ export default {
         skinMix: 0.5,
         shapeMix: 0.5,
         faceFeatures: [],
+        headOverlayData: [],
+        componentVariationData: [],
       },
       genderOptions: [
         {
@@ -125,6 +143,107 @@ export default {
           id: 1,
           type: "gender",
           name: "Женский",
+        },
+      ],
+      variations: [
+        {
+          name: "Стрижка",
+          id: 2,
+          options: [
+            {
+              id: 0,
+              type: "variationData",
+              name: 1,
+            },
+            {
+              id: 1,
+              type: "variationData",
+              name: 2,
+            },
+            {
+              id: 2,
+              type: "variationData",
+              name: 3,
+            },
+            {
+              id: 3,
+              type: "variationData",
+              name: 4,
+            },
+            {
+              id: 4,
+              type: "variationData",
+              name: 5,
+            },
+          ],
+        },
+        {
+          name: "Верх",
+          id: 11,
+          options: [
+            {
+              id: 0,
+              type: "variationData",
+              name: 1,
+            },
+            {
+              id: 16,
+              type: "variationData",
+              name: 2,
+            },
+            {
+              id: 17,
+              type: "variationData",
+              name: 3,
+            },
+            {
+              id: 38,
+              type: "variationData",
+              name: 4,
+            },
+          ],
+        },
+        {
+          id: 4,
+          name: "Низ",
+          options: [
+            {
+              id: 0,
+              type: "variationData",
+              name: 1,
+            },
+            {
+              id: 1,
+              type: "variationData",
+              name: 2,
+            },
+            {
+              id: 5,
+              type: "variationData",
+              name: 3,
+            },
+            {
+              id: 6,
+              type: "variationData",
+              name: 4,
+            },
+          ],
+        },
+        {
+          id: 6,
+          name: "Обувь",
+          options: [
+            {
+              id: 1,
+              type: "variationData",
+              name: 1,
+            },
+            {
+              id: 6,
+              type: "variationData",
+              name: 2,
+            },
+          ],
         },
       ],
     };
@@ -144,14 +263,45 @@ export default {
   methods: {
     onOptionChange(option) {
       if (option.type === "faceFeature") {
-        // Надо переписать
         this.character.faceFeatures[option.index] = option.value;
-      } else {
+      } else if (
+        option.type !== "variationData" &&
+        option.type !== "headOverlayData"
+      ) {
         this.character = Object.assign({}, this.character, {
           [option.type]:
             typeof option.id === "undefined" ? option.value : option.id,
         });
       }
+      if (option.type === "variationData") {
+        const variationObject = {
+          componentId: option.id,
+          drawableId: option.chosenOption.id,
+        };
+        let existedVariationIndex = undefined;
+        if (this.character.componentVariationData.length) {
+          existedVariationIndex = this.character.componentVariationData.findIndex(
+            (variation) => {
+              return variation.componentId === option.id;
+            }
+          );
+        }
+        if (
+          existedVariationIndex !== undefined &&
+          existedVariationIndex !== -1
+        ) {
+          this.character.componentVariationData[
+            existedVariationIndex
+          ] = variationObject;
+        } else {
+          this.character.componentVariationData.push(variationObject);
+        }
+      }
+
+      if (option.type === "headOverlayData") {
+        this.character.headOverlayData = option.data;
+      }
+
       if (!this.$appConfig.isDev) {
         // eslint-disable-next-line
         mp.trigger(
@@ -168,6 +318,10 @@ export default {
     },
     gotToNextStep() {
       if (this.currentStep === this.stepNames.length - 1) {
+        if (!this.$appConfig.isDev) {
+          // eslint-disable-next-line
+          mp.trigger("cCharacterEditor-saveCharacter");
+        }
         return;
       }
       this.currentStep++;
@@ -219,18 +373,6 @@ export default {
   }
   .main-wrapper {
     padding: 0 15px;
-  }
-  .mb5 {
-    margin-bottom: 5px;
-  }
-  .mb15 {
-    margin-bottom: 15px;
-  }
-  .px35 {
-    padding: 0 35px;
-  }
-  .pointer {
-    cursor: pointer;
   }
   .back {
     font-size: 24px;

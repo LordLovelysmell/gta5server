@@ -1,5 +1,6 @@
 require('./Basic/Auth/sLogin')
 require('./Basic/Auth/sRegister')
+require('./Basic/CharacterEditor/sCharacterEditor')
 require('./Basic/Vehicle/sVehicleSingletone')
 
 

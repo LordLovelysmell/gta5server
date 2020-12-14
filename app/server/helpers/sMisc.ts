@@ -26,11 +26,13 @@ class MiscSingleton {
   }
 
   dbquery(query: string, parameters?: any) {
-    console.log(parameters)
     return new Promise((r, j) => connection.query(query, parameters || null, (err: any, data: any) => {
       if (err) {
         this.log.error(query);
         return j(err);
+      }
+      if (query.startsWith('INSERT')) {
+        r(data.insertId)
       }
       r(data);
     }))

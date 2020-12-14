@@ -21,15 +21,14 @@ mp.events.add({
   },
   'cLogin-destroyLoginCamera': () => {
     camera.destroy()
-    browser.setScreenState({ showChat: true, showCursor: true, showRadar: true, isBlurred: false })
+    browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
     browser.execute(`router.push({ name: 'main' })`)
-
   },
   'cLogin-sendAuthResponse': (errorResponse) => {
     browser.execute(`appData.commit('auth/setAlertMessage', '${errorResponse}');`)
   },
   'cCharacterEditor-prepareCharacterEditor': () => {
-    browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
+    browser.setScreenState({ showChat: false, showCursor: true, showRadar: false, isBlurred: false })
     characterEditor.prepareCharacterEditor()
     browser.execute(`router.push({ name: 'character-editor' })`);
 
@@ -41,6 +40,24 @@ mp.events.add({
     setTimeout(() => {
       mp.gui.cursor.show(true, true)
     }, 1)
+  },
+  'cCharacterEditor-saveCharacter': () => {
+    browser.setScreenState({ showChat: true, showCursor: true, showRadar: true, isBlurred: false })
+    browser.execute(`router.push({ name: 'main' })`)
+    camera.setActive(false)
+    setTimeout(() => {
+      mp.gui.cursor.show(false, false)
+    }, 1)
+    mp.game.cam.renderScriptCams(false, true, 2500, true, false)
+    setTimeout(() => {
+      mp.game.cam.doScreenFadeOut(1500)
+    }, 1500)
+    setTimeout(() => {
+      characterEditor.saveCharacter()
+    }, 3000)
+    setTimeout(() => {
+      mp.game.cam.doScreenFadeIn(1000)
+    }, 3500)
   },
   'callServerEvent': (eventName, data) => {
     mp.events.callRemote(eventName, data)

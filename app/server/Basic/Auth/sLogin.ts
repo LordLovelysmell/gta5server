@@ -1,8 +1,8 @@
 export { }
 
 const bcrypt = require('bcrypt');
-
 const misc = require("../../helpers/sMisc")
+import characterEditor from '../CharacterEditor/sCharacterEditor';
 
 class ServerLogin {
   async login(player: PlayerMp, loginData: string) {
@@ -16,17 +16,23 @@ class ServerLogin {
       return
     }
 
+    const { id, position } = response[0]
+
     misc.log.debug("Start comparing the password")
-    bcrypt.compare(password, response[0].password, function (err: any, isSamePassword: boolean) {
+    bcrypt.compare(password, response[0].password, async function (err: any, isSamePassword: boolean) {
       if (err) {
         console.error("bcrypt error - ", err)
       }
       if (isSamePassword) {
-        misc.log.debug("Successfully loged in")
+        misc.log.debug("Successfully logged in")
+        player.setVariable('guid', id)
 
-        const { x, y, z } = JSON.parse(response[0].position)
+        await characterEditor.loadCharacter(player)
+
+        const { x, y, z } = JSON.parse(position)
         console.log(x, y, z)
-        player.spawn(new mp.Vector3(x, y, z))
+        player.position = new mp.Vector3(x, y, z)
+
         player.call("cLogin-destroyLoginCamera")
         player.outputChatBox("Добро пожаловать на сервер Ardent RP!")
       } else {
