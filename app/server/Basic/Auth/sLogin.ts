@@ -30,8 +30,8 @@ class ServerLogin {
         await characterEditor.loadCharacter(player)
 
         const { x, y, z } = JSON.parse(position)
-        console.log(x, y, z)
         player.position = new mp.Vector3(x, y, z)
+        player.dimension = 0
 
         player.call("cLogin-destroyLoginCamera")
         player.outputChatBox("Добро пожаловать на сервер Ardent RP!")

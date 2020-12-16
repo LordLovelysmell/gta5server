@@ -26,7 +26,7 @@ class VehicleSingleton {
 					secondaryColor: JSON.stringify([misc.getRandomInt(0, 159), misc.getRandomInt(0, 159), misc.getRandomInt(0, 159)]),
 				}
 				new Vehicle(d);
-				misc.log.debug(`${player.name} spawned faggio2`);
+				misc.log.debug(`${player.name} spawned ${vehicleModel}`);
 			},
 
 			'tp': (player, fullText, a, b, c) => {
