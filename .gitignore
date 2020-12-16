@@ -1,6 +1,7 @@
 node_modules
 packages
 client_packages
+ragemp-server.exe
 /BugTrap-x64.dll
 /serverLogs.log
 /dotnet
