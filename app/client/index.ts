@@ -45,7 +45,7 @@ mp.events.add({
     browser.setScreenState({ showChat: true, showCursor: true, showRadar: true, isBlurred: false })
     browser.execute(`router.push({ name: 'main' })`)
     camera.setActive(false)
-    setTimeout(() => {
+    setTimeout(() => { // TODO: проверить необходимость <== этого и, вероятно, удалить
       mp.gui.cursor.show(false, false)
     }, 1)
     mp.game.cam.renderScriptCams(false, true, 2500, true, false)
@@ -58,6 +58,14 @@ mp.events.add({
     setTimeout(() => {
       mp.game.cam.doScreenFadeIn(1000)
     }, 3500)
+  },
+  'cATM-open': (serializedData: string) => {
+    browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
+    browser.execute(`appData.commit('atm/setATMData', '${serializedData}');`)
+    browser.execute(`router.push({ name: 'atm' })`)
+  },
+  'hideCursor': () => {
+    browser.setScreenState({ showChat: true, showCursor: false, showRadar: false, isBlurred: false })
   },
   'callServerEvent': (eventName, data) => {
     mp.events.callRemote(eventName, data)

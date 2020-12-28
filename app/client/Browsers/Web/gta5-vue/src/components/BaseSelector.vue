@@ -104,7 +104,6 @@ export default {
       if (this.id === -1) {
         return this.currentOption;
       }
-      debugger;
       return {
         id: this.id,
         chosenOption: this.currentOption,

@@ -27,7 +27,7 @@ class Registration {
 
     bcrypt.hash(password, saltRounds, async function (err: any, hash: string) {
       try {
-        const id = await misc.query('INSERT INTO players (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
+        const id = await misc.query('INSERT INTO player (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
           [escapedData.login, hash, player.ip, player.ip, JSON.stringify(firstSpawn), player.socialClub])
 
         if (id) {

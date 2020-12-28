@@ -1,11 +1,65 @@
+export { }
+
+const misc = require('../../helpers/sMisc')
+
 class ATM {
   constructor() {
     mp.events.add({
       "playerEnterColshape": (player: PlayerMp, shape: ColshapeMp) => {
-        if (player.vehicle || !shape.getVariable('isATM')) return;
-        player.notify('Банкомат');
+        if (player.vehicle || !shape.getVariable('isATM')) return
+        player.setVariable('canOpenATM', true)
+        player.notify('Нажмите ~b~E~s~, чтобы вставить карту в банкомат')
       },
+      "playerExitColshape": (player, shape) => {
+        if (!shape.getVariable('isATM')) return
+        player.setVariable('canOpenATM', false)
+        player.call('hideCursor')
+      },
+      "sKeys-E": async (player) => {
+        if (!player.getVariable('canOpenATM')) return;
+        await this.loadPlayerBankAccountInfo(player);
+      },
+      'sATM-topUp': async (player, topUp) => {
+        try {
+          const characterId = player.getVariable('guid')
+          const result = await misc.query('SELECT cash, bank_card_id, balance FROM `character` LEFT JOIN bank_card ON character.character_id = ?', [characterId])
+
+          if (!result[0]) {
+            player.notify('~r~Кажется, что банкомат не работает. ~s~Пожалуйста, попробуйте позже.')
+            return
+          }
+
+          topUp = parseInt(topUp)
+
+          const { cash, balance, bank_card_id } = result[0]
+
+          if (topUp > parseInt(cash)) {
+            player.notify('~r~У вас нет столько наличных.')
+            return
+          }
+
+          const newBalance = topUp + parseInt(balance)
+          const newCash = parseInt(cash) - topUp
+
+          const update = await misc.query('UPDATE bank_card bc, `character` c SET bc.balance = ?, c.cash = ? WHERE bc.bank_card_id = ? AND c.character_id = ?', [newBalance, newCash, bank_card_id, characterId])
+          console.log(update)
+          misc.log.debug(`Character [${characterId}] updated cash from ${cash} to ${newCash} and card balance from ${balance} to ${newBalance}`)
+        } catch (err) {
+          console.error(err)
+          player.notify('~r~Кажется, что банкомат не работает. ~s~Пожалуйста, попробуйте позже.')
+        }
+
+      }
     })
+  }
+
+  async loadPlayerBankAccountInfo(player: PlayerMp) {
+    const result = await misc.query('SELECT * FROM bank_account LEFT JOIN bank_card ON bank_account.character_id = ?', [player.getVariable('guid')])
+    if (!result[0]) {
+      player.notify('~r~Похоже, что Вас отсутствует банковская карта. ~s~Откройте счет в банке или восстановите утерянную карту.')
+      return
+    }
+    player.call('cATM-open', [JSON.stringify(result[0])])
   }
 
   createATMByCoords(x: number, y: number, z: number) {

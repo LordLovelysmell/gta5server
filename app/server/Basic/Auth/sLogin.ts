@@ -9,7 +9,7 @@ class ServerLogin {
     const { login, password } = JSON.parse(loginData)
     const escapedLogin = misc.escape(login)
 
-    const response = await misc.query('SELECT id, login, password, position, socialclub FROM players WHERE login = ' + escapedLogin + ' LIMIT 1')
+    const response = await misc.query('SELECT id, login, password, position, socialclub FROM player WHERE login = ' + escapedLogin + ' LIMIT 1')
 
     if (!response[0]) {
       player.call("cLogin-sendAuthResponse", ["Данный аккаунт не существует."])
@@ -27,7 +27,9 @@ class ServerLogin {
         misc.log.debug("Successfully logged in")
         player.setVariable('guid', id)
 
-        await characterEditor.loadCharacter(player)
+        const character = await characterEditor.loadCharacter(player)
+
+        player.setVariable('guid', character.character_id)
 
         const { x, y, z } = JSON.parse(position)
         player.position = new mp.Vector3(x, y, z)

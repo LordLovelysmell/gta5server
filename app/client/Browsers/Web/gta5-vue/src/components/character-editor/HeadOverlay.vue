@@ -1,26 +1,28 @@
 <template>
   <div>
     <div v-for="(overlay, index) in overlays" :key="index" class="mb15">
-      <base-selector
-        class="mb5"
-        :name="overlay.name"
-        :options="overlay.options"
-        :id="index"
-        @option-change="onOptionChange"
-      />
-      <base-range-selector
-        v-if="overlay.requireOpacityRangeSlider"
-        name="Заметность"
-        :options="{
-          min: '0',
-          max: '1',
-          step: '0.05',
-          type: 'opacity',
-          index,
-        }"
-        :indexed-return="true"
-        @option-change="onOptionChange"
-      />
+      <div v-show="overlay.isVisible">
+        <base-selector
+          class="mb5"
+          :name="overlay.name"
+          :options="overlay.options"
+          :id="index"
+          @option-change="onOptionChange"
+        />
+        <base-range-selector
+          v-if="overlay.requireOpacityRangeSlider"
+          name="Заметность"
+          :options="{
+            min: '0',
+            max: '1',
+            step: '0.05',
+            type: 'opacity',
+            index,
+          }"
+          :indexed-return="true"
+          @option-change="onOptionChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -34,16 +36,27 @@ export default {
     BaseSelector,
     BaseRangeSelector,
   },
+  props: {
+    gender: {
+      type: Number || String,
+      required: true,
+    },
+  },
   data() {
     return {
       headOverlayData: [],
-      overlays: [
+    };
+  },
+  computed: {
+    overlays() {
+      return [
         {
           name: "Недостатки",
           options: Array(24)
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: true,
+          isVisible: true,
         },
         {
           name: "Волосы на лице",
@@ -51,6 +64,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: this.gender === 0,
         },
         {
           name: "Брови",
@@ -58,6 +72,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: true,
         },
         {
           name: "Старение",
@@ -65,6 +80,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: true,
+          isVisible: true,
         },
         {
           name: "Макияж",
@@ -72,6 +88,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: this.gender === 1,
         },
         {
           name: "Румянец",
@@ -79,6 +96,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: false,
         },
         {
           name: "Цвет лица",
@@ -86,6 +104,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: true,
         },
         {
           name: "Солнечные ожоги",
@@ -93,6 +112,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: true,
         },
         {
           name: "Помада",
@@ -100,6 +120,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: this.gender === 1,
         },
         {
           name: "Родинки и веснушки",
@@ -107,6 +128,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: true,
         },
         {
           name: "Волосы на груди",
@@ -114,6 +136,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: this.gender === 0,
         },
         {
           name: "Пятна на теле",
@@ -121,6 +144,7 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: true,
         },
         {
           name: "Добавить пятна на теле",
@@ -128,9 +152,10 @@ export default {
             .fill(null)
             .map((u, i) => i),
           requireOpacityRangeSlider: false,
+          isVisible: true,
         },
-      ],
-    };
+      ];
+    },
   },
   mounted() {
     this.headOverlayData = Array(13)

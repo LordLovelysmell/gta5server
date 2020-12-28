@@ -28,6 +28,12 @@ const routes = [
         component: () =>
           import( /* webpackChunkName: "character-editor" */ '../views/CharacterEditor.vue')
       },
+      {
+        path: "/atm",
+        name: "atm",
+        component: () =>
+          import( /* webpackChunkName: "atm" */ '../views/ATM.vue')
+      },
     ],
   },
 

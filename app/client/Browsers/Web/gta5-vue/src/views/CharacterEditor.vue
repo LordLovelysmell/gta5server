@@ -71,7 +71,7 @@
           </div>
         </div>
         <div class="step-wrapper" v-show="currentStep === 2">
-          <head-overlay @head-overlay-data-set="onOptionChange" />
+          <head-overlay @head-overlay-data-set="onOptionChange" :gender="character.gender" />
         </div>
         <div class="step-wrapper" v-show="currentStep === 3">
           <base-selector
