@@ -12,6 +12,7 @@ class sCharacterEditor {
     mp.events.add({
       "sCharacterEditor-saveCharacter": async (player, characterData) => {
         await this.saveCharacter(player, characterData)
+        player.dimension = 0;
       }
     })
   }
