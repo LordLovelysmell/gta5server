@@ -31,8 +31,23 @@ const routes = [
       {
         path: "/atm",
         name: "atm",
+        meta: { layout: 'atm' },
         component: () =>
-          import( /* webpackChunkName: "atm" */ '../views/ATM.vue')
+          import( /* webpackChunkName: "atm" */ '../views/ATM/ATM.vue'),
+        children: [
+          {
+            path: 'pin',
+            name: 'pincode-screen',
+            component: () =>
+              import( /* webpackChunkName: "atm" */ '../views/ATM/PinCodeScreen.vue'),
+          },
+          {
+            path: 'biometric-access-info',
+            name: 'biometric-access-info',
+            component: () =>
+              import( /* webpackChunkName: "atm" */ '../views/ATM/BiometicAccessInfo.vue'),
+          }
+        ]
       },
     ],
   },

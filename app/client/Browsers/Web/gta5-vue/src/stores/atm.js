@@ -1,7 +1,9 @@
 const module = {
   namespaced: true,
   state: {
-    atmData: {}
+    atmData: {
+      currentComponent: 'PinCodeScreen'
+    }
   },
   mutations: {
     setATMData(state, serializedData) {
