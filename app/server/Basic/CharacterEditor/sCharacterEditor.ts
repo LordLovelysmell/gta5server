@@ -1,6 +1,4 @@
-export { }
-
-const misc = require("../../helpers/sMisc")
+import { miscSingleton } from '@server/helpers/sMisc'
 
 const data = {
   // @ts-ignore
@@ -21,7 +19,7 @@ class sCharacterEditor {
     const { gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlays, componentVariations } = JSON.parse(characterData)
 
     try {
-      await misc.query('INSERT INTO `character` (playerId, gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      await miscSingleton.query('INSERT INTO `character` (playerId, gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [player.getVariable('guid'), gender, motherId, fatherId, skinMix, shapeMix, JSON.stringify(faceFeatures), JSON.stringify(headOverlays), JSON.stringify(componentVariations)])
     } catch (err) {
       console.error(err)
@@ -31,7 +29,7 @@ class sCharacterEditor {
   async loadCharacter(player: PlayerMp) {
     const id = player.getVariable('guid')
     try {
-      const response = await misc.query('SELECT character_id, gender, fatherId, motherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData FROM `character` WHERE playerId = ' + id + ' LIMIT 1')
+      const response = await miscSingleton.query('SELECT character_id, gender, fatherId, motherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData FROM `character` WHERE playerId = ' + id + ' LIMIT 1')
 
       if (!response[0]) {
         console.log('Нет данных о персонаже с playerId = ', id)
@@ -87,11 +85,9 @@ class sCharacterEditor {
 
       return response[0]
     } catch (error) {
-      misc.log.debug(`Error during loading character, loadChararcter(player: PlayerMp), ${error}`)
       console.error(error)
     }
   }
 }
 
-const characterEditor = new sCharacterEditor();
-export default characterEditor;
+export const characterEditor = new sCharacterEditor();

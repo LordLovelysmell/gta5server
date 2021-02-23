@@ -15,7 +15,7 @@ class MiscSingleton {
     }))
   }
 
-  async query(query: string, parameters?: any) {
+  async query(query: string, parameters?: any): Promise<any> {
     const start = Date.now()
     const data = await this.dbquery(query, parameters)
     const time = Date.now() - start
@@ -47,5 +47,4 @@ class MiscSingleton {
     return JSON.stringify(obj)
   }
 }
-const miscSingleton = new MiscSingleton()
-module.exports = miscSingleton
+export const miscSingleton = new MiscSingleton()

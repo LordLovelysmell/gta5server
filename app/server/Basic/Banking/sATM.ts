@@ -1,6 +1,4 @@
-export { }
-
-const misc = require('../../helpers/sMisc')
+import { miscSingleton } from '@server/helpers/sMisc'
 
 interface IBankCard {
   bank_card_id: number,
@@ -51,7 +49,7 @@ class ATM {
         const bankAccount = player.getVariable('bankAccount')
         const defaultBankCard = bankAccount.cards.find((bankCard: IBankCard) => bankCard.is_default)
         console.log('defaultBankCard: ', defaultBankCard)
-        const result = await misc.query('SELECT cash FROM `character` WHERE character_id = ?', [characterId])
+        const result = await miscSingleton.query('SELECT cash FROM `character` WHERE character_id = ?', [characterId])
         const playerCash = Number(result[0].cash)
         const atmData: { amount: number, type: string } = JSON.parse(stringData)
 
@@ -61,7 +59,7 @@ class ATM {
           }
           const playerBankCardNewBalance = defaultBankCard.balance - Number(atmData.amount)
 
-          await misc.query('UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id])
+          await miscSingleton.query('UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id])
           player.setVariable('cash', playerCash + Number(atmData.amount))
         }
 
@@ -72,7 +70,7 @@ class ATM {
           const playerBankCardNewBalance = defaultBankCard.balance + Number(atmData.amount)
           const playerCashNewBalance = playerCash - Number(atmData.amount)
 
-          const response = await misc.query('BEGIN TRANSACTION; UPDATE bank_card SET balance = ? WHERE bank_card_id = ?; UPDATE character SET cash = ? WHERE character_id = ?; COMMIT;', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id, playerCashNewBalance, characterId])
+          const response = await miscSingleton.query('BEGIN TRANSACTION; UPDATE bank_card SET balance = ? WHERE bank_card_id = ?; UPDATE character SET cash = ? WHERE character_id = ?; COMMIT;', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id, playerCashNewBalance, characterId])
           console.log(response)
           bankAccount.cards[0].balance = playerBankCardNewBalance
           player.setVariable('bankAccount', this.generateBankAccountObject(bankAccount))
@@ -84,7 +82,7 @@ class ATM {
 
   async loadPlayerBankAccount(player: PlayerMp) {
     // TODO: Implement multicard logic in future
-    const result = await misc.query('SELECT * FROM `bank_card` WHERE is_default = 1 AND bank_account_id IN (SELECT bank_account_id FROM `bank_account` WHERE character_id = ?)', [player.getVariable('guid')])
+    const result = await miscSingleton.query('SELECT * FROM `bank_card` WHERE is_default = 1 AND bank_account_id IN (SELECT bank_account_id FROM `bank_account` WHERE character_id = ?)', [player.getVariable('guid')])
     return result[0]
   }
 

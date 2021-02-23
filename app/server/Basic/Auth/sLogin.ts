@@ -1,15 +1,14 @@
-export { }
+import { miscSingleton } from '@server/helpers/sMisc'
+import { characterEditor } from '../CharacterEditor/sCharacterEditor'
 
-const bcrypt = require('bcrypt');
-const misc = require("../../helpers/sMisc")
-import characterEditor from '../CharacterEditor/sCharacterEditor';
+const bcrypt = require('bcrypt')
 
 class ServerLogin {
   async login(player: PlayerMp, loginData: string) {
     const { login, password } = JSON.parse(loginData)
-    const escapedLogin = misc.escape(login)
+    const escapedLogin = miscSingleton.escape(login)
 
-    const response = await misc.query('SELECT id, login, password, position, socialclub FROM player WHERE login = ' + escapedLogin + ' LIMIT 1')
+    const response = await miscSingleton.query('SELECT id, login, password, position, socialclub FROM player WHERE login = ' + escapedLogin + ' LIMIT 1')
 
     if (!response[0]) {
       player.call("cLogin-sendAuthResponse", ["Данный аккаунт не существует."])
@@ -18,13 +17,11 @@ class ServerLogin {
 
     const { id, position } = response[0]
 
-    misc.log.debug("Start comparing the password")
     bcrypt.compare(password, response[0].password, async function (err: any, isSamePassword: boolean) {
       if (err) {
         console.error("bcrypt error - ", err)
       }
       if (isSamePassword) {
-        misc.log.debug("Successfully logged in")
         player.setVariable('guid', id)
 
         const character = await characterEditor.loadCharacter(player)

@@ -1,6 +1,6 @@
 import { logger } from '@server/helpers/default.logger'
 
-const mysql = require('mysql2/promise')
+const mysql = require('mysql')
 
 const connection = mysql.createPool({
 	host: 'localhost',
@@ -17,7 +17,7 @@ connection.getConnection(function (error: string) {
 		logger.error(`Error during connection to the database - ${error}`)
 		throw error;
 	} else {
-		logger.log('Successfully connected to the database')
+		logger.info('Successfully connected to the database')
 	}
 })
 
