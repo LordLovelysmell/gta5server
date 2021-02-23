@@ -1,4 +1,6 @@
-const mysql = require('mysql');
+import { logger } from '@server/helpers/default.logger'
+
+const mysql = require('mysql2/promise')
 
 const connection = mysql.createPool({
 	host: 'localhost',
@@ -10,13 +12,15 @@ const connection = mysql.createPool({
 // NOTE! all mysql queries here is unsecure! You should wrap all the data with connection.escape(data);
 // More https://www.tizag.com/mysqlTutorial/mysql-php-sql-injection.php
 
-connection.getConnection(function (error) {
+connection.getConnection(function (error: string) {
 	if (error) {
-		console.error(`Error during connection to the database - ${error}`);
+		logger.error(`Error during connection to the database - ${error}`)
 		throw error;
 	} else {
-		console.log('Successfully connected to the database');
+		logger.log('Successfully connected to the database')
 	}
-});
+})
 
-module.exports = connection;
+export {
+	connection
+}

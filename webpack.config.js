@@ -1,6 +1,7 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const hq = require('alias-hq')
 
 
 module.exports = {
@@ -9,7 +10,8 @@ module.exports = {
     'client_packages': './app/client',
   },
   resolve: {
-    extensions: ['.js', '.ts',]
+    extensions: ['.js', '.ts',],
+    alias: hq.get('webpack')
   },
   module: {
     rules: [

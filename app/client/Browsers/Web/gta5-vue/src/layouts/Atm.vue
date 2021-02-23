@@ -5,7 +5,7 @@
         <img src="@/assets/img/atm/fleeca_logotype.png" alt="" />
       </header>
       <div class="content">
-        <slot />
+        <router-view />
       </div>
     </div>
     <atm-numpad
@@ -20,13 +20,53 @@
 
 <script>
 // @ is an alias to /src
-import { mapGetters } from "vuex";
 import AtmNumpad from "@/components/atm/AtmNumpad.vue";
 
 export default {
-  name: "ATM",
+  name: "Atm",
   components: {
     AtmNumpad,
+  },
+  methods: {
+    close() {
+      this.$router.push({ name: "main" });
+
+      if (!this.$appConfig.isDev) {
+        // eslint-disable-next-line
+        mp.trigger("hideCursor");
+      }
+    },
+    onNumericNumpadButtonPress(number) {
+      this.currentInput = `${this.currentInput}${number}`;
+      if (this.currentComponent === "PinCodeScreen") {
+        this.currentInput = this.currentInput.slice(0, 4);
+      }
+    },
+    onClearNumpadButtonPress() {
+      this.currentInput = "";
+    },
+    onLinkClick(component) {
+      this.currentComponent = component;
+    },
+    onEnterButtonPress() {
+      if (
+        this.currentComponent === "PinCodeScreen" &&
+        this.currentInput.length < 4
+      ) {
+        return false;
+      }
+      if (!this.$appConfig.isDev) {
+        // eslint-disable-next-line
+        mp.trigger(
+          "callServerEvent",
+          "sATM-topUp",
+          JSON.stringify({
+            currentInput: this.currentInput,
+            currentComponent: this.currentComponent,
+          })
+        );
+      }
+    },
   },
 };
 </script>
@@ -42,6 +82,7 @@ export default {
 }
 
 .atm-wrapper {
+  position: relative;
   width: 700px;
   height: 550px;
   background: #f9f9f9;
@@ -51,7 +92,7 @@ export default {
 }
 
 .content {
-  padding: 30px 120px 35px;
+  padding: 30px 50px 35px;
 }
 
 .header {

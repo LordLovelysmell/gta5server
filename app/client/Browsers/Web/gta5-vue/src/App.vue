@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <router-view v-slot="slotProps">
-      <transition name="route" mode="out-in">
-        <component :is="slotProps.Component"></component>
-      </transition>
-    </router-view>
+  <div id="app">
+    <layout>
+      <router-view />
+    </layout>
   </div>
 </template>
 

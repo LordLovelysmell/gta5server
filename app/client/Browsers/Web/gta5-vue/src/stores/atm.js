@@ -1,9 +1,8 @@
 const module = {
   namespaced: true,
   state: {
-    atmData: {
-      currentComponent: 'PinCodeScreen'
-    }
+    atmData: null,
+    currentNumpadInput: '',
   },
   mutations: {
     setATMData(state, serializedData) {
@@ -16,11 +15,23 @@ const module = {
         pin_code,
         is_default
       })
+    },
+    setAdditionalNumberToNumpadInput(state, number) {
+      state.currentNumpadInput = `${state.currentNumpadInput}${number}`
+    },
+    clearNumpadInput(state) {
+      state.currentNumpadInput = ''
+    },
+    setFinalNumberToNumpadInput(state, number) {
+      state.currentNumpadInput = number
     }
   },
   getters: {
     getATMData(state) {
       return state.atmData
+    },
+    currentNumpadInput(state) {
+      return state.currentNumpadInput
     }
   }
 }

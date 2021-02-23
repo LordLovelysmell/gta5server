@@ -10,8 +10,11 @@
         class="circle"
       />
     </div>
-    <div v-else>
-      {{ text }}
+    <div
+      v-else
+      class="text-wrapper d-flex justify-content-center align-items-center"
+    >
+      <span class="text">{{ textWithSpaces }}</span>
     </div>
   </div>
 </template>
@@ -30,11 +33,11 @@ export default {
       default: false,
     },
   },
-  // computed: {
-  //   value() {
-  //     if (isPinCode)
-  //   }
-  // }
+  computed: {
+    textWithSpaces() {
+      return this.text.replace(/(\d)(?=(\d{3})+$)/g, "$1 ");
+    },
+  },
 };
 </script>
 
@@ -62,6 +65,14 @@ $green: #27903a;
 
   &:last-child {
     margin-right: 0;
+  }
+}
+.text-wrapper {
+  height: 100%;
+
+  .text {
+    font-size: 24px;
+    line-height: 28px;
   }
 }
 </style>

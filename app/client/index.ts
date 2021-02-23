@@ -16,6 +16,27 @@ const camera = new Camera({
 const characterEditor = new cCharacterEditor(mp.players.local)
 
 mp.events.add({
+  "render": () => {
+    // Disable HUD components.    
+    mp.game.ui.hideHudComponentThisFrame(2); // HUD_WEAPON_ICON
+    mp.game.ui.hideHudComponentThisFrame(3); // HUD_CASH
+    mp.game.ui.hideHudComponentThisFrame(6); // HUD_VEHICLE_NAME
+    mp.game.ui.hideHudComponentThisFrame(7); // HUD_AREA_NAME
+    mp.game.ui.hideHudComponentThisFrame(8); // HUD_VEHICLE_CLASS
+    mp.game.ui.hideHudComponentThisFrame(9); // HUD_STREET_NAME
+
+    mp.game.ui.hideHudComponentThisFrame(19); // HUD_WEAPON_WHEEL
+    mp.game.ui.hideHudComponentThisFrame(20); // HUD_WEAPON_WHEEL_STATS
+    mp.game.ui.hideHudComponentThisFrame(22); // MAX_HUD_WEAPONS
+
+    // if (!mp.game.graphics.hasStreamedTextureDictLoaded("mphud")) {
+    //   mp.game.graphics.requestStreamedTextureDict("mphud", true);
+    // }
+
+    // if (mp.game.graphics.hasStreamedTextureDictLoaded("mphud")) {
+    //   mp.game.graphics.drawSprite("mphud", "mp_anim_cash", 0.5, 0.5, 0.1, 0.1, 0, 255, 255, 255, 100);
+    // }
+  },
   'cLogin-initLogin': () => {
     camera.setActive(true)
   },
@@ -62,7 +83,12 @@ mp.events.add({
   'cATM-open': (serializedData: string) => {
     browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
     browser.execute(`appData.commit('atm/setATMData', '${serializedData}');`)
-    browser.execute(`router.push({ name: 'atm' })`)
+    browser.execute(`router.push({ name: 'atm:login' })`)
+  },
+  'cATM-loginProcess': (isPincodeCorrect: boolean) => {
+    if (isPincodeCorrect) {
+      browser.execute(`router.push({ name: 'atm:main-menu' })`)
+    }
   },
   'hideCursor': () => {
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: false, isBlurred: false })

@@ -31,20 +31,57 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "AtmNumpad",
+  computed: {
+    ...mapGetters({
+      currentNumpadInput: "atm/currentNumpadInput",
+    }),
+  },
   methods: {
     onNumericButtonPress(number) {
-      this.$emit("button-pressed", number);
+      this.$store.commit("atm/setAdditionalNumberToNumpadInput", number);
     },
     onCancelButtonPress() {
       this.$emit("cancel-button-pressed");
     },
     onClearButtonPress() {
-      this.$emit("clear-button-pressed");
+      this.$store.commit("atm/clearNumpadInput");
     },
     onEnterButtonPress() {
-      this.$emit("enter-button-pressed");
+      if (this.$route.name === "atm:login") {
+        if (!this.$appConfig.isDev) {
+          // eslint-disable-next-line
+          mp.trigger(
+            "callServerEvent",
+            "sATM-login",
+            JSON.stringify({
+              pin: this.currentNumpadInput,
+            })
+          );
+        } else {
+          this.$router.push({ name: "atm:main-menu" });
+        }
+      }
+
+      if (
+        this.$route.name === "atm:withdrawal" ||
+        this.$route.name === "atm:deposit"
+      ) {
+        if (!this.$appConfig.isDev) {
+          // eslint-disable-next-line
+          mp.trigger(
+            "callServerEvent",
+            "sATM-withdrawOrDeposit",
+            JSON.stringify({
+              amount: this.currentNumpadInput,
+              type: this.$route.name.split(":")[1],
+            })
+          );
+        }
+      }
     },
   },
 };

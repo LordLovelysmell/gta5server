@@ -1,12 +1,18 @@
 <template>
-  <span class="link">
+  <router-link class="link" :to="to">
     <slot />
-  </span>
+  </router-link>
 </template>
 
 <script>
 export default {
   name: "AtmLink",
+  props: {
+    to: {
+      type: Object,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -16,7 +22,6 @@ export default {
   text-decoration: underline;
   font-size: 14px;
   line-height: 16px;
-  cursor: pointer;
 
   &:active {
     color: #5db36c;

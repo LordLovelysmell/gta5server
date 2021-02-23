@@ -1,39 +1,39 @@
 <template>
   <div>
     <p class="headline text-center">Пожалуйста, введите пин-код</p>
-    <atm-input class="atm-input" :text="currentInput" :isPinCode="true" />
+    <atm-input class="atm-input" :text="pinCode" :isPinCode="true" />
     <p class="extra-info text-center">
       Вы также можете оформить биометрический доступ в отделении нашего банка
     </p>
     <div class="link-wrapper d-flex justify-content-center">
-      <atm-link
-        class="text-center"
-        @click="$emit('link-click', 'BiometricAccessInfo')"
-        >Подробнее</atm-link
-      >
+      <atm-link class="text-center" :to="{ name: 'atm:biometric-access-info' }">
+        Подробнее
+      </atm-link>
     </div>
-    <p class="cancel-info text-center">
-      Для отказа от операции нажмите кнопку ОТМЕНА / CANCEL на клавиатуре
-      устройства
-    </p>
+    <info-footer />
   </div>
 </template>
 
 <script>
 import AtmInput from "@/components/atm/AtmInput.vue";
 import AtmLink from "@/components/atm/AtmLink.vue";
+import InfoFooter from "@/components/atm/InfoFooter.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "PinCodeScreen",
+  computed: {
+    ...mapGetters({
+      currentNumpadInput: "atm/currentNumpadInput",
+    }),
+    pinCode() {
+      return this.currentNumpadInput.slice(0, 4);
+    },
+  },
   components: {
     AtmInput,
     AtmLink,
-  },
-  props: {
-    currentInput: {
-      type: String,
-      required: true,
-    },
+    InfoFooter,
   },
 };
 </script>
@@ -65,19 +65,12 @@ export default {
 
 .extra-info {
   font-size: 14px;
-  margin-bottom: 15px;
   line-height: 16px;
+  max-width: 460px;
+  margin: 0 auto 15px;
 }
 
 .link-wrapper {
   margin-bottom: 125px;
-}
-
-.cancel-info {
-  color: #9e9e9e;
-  font-size: 18px;
-  width: 300px;
-  margin: 0 auto;
-  line-height: 21px;
 }
 </style>
