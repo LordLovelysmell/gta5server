@@ -16,3 +16,5 @@ linux_x64.tar.gz
 .env.*.local
 
 /logs
+
+index.js
