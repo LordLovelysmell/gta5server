@@ -1,10 +1,8 @@
 <template>
-  <div>
-    <router-view v-slot="slotProps">
-      <transition name="route" mode="out-in">
-        <component :is="slotProps.Component"></component>
-      </transition>
-    </router-view>
+  <div id="app">
+    <layout>
+      <router-view />
+    </layout>
   </div>
 </template>
 
@@ -29,6 +27,7 @@
 
 <style lang="scss">
 @import "@/assets/scss/vendor/bootstrap/bootstrap.scss";
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 /* width */
 ::-webkit-scrollbar {

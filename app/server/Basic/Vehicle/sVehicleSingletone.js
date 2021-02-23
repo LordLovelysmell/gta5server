@@ -1,7 +1,6 @@
 
-const misc = require('../../helpers/sMisc');
-
-const Vehicle = require('./sVehicle');
+import { miscSingleton } from '@server/helpers/sMisc'
+import Vehicle from './sVehicle'
 
 
 
@@ -11,7 +10,7 @@ class VehicleSingleton {
 			'veh': (player, fullText, vehicleModel) => {  // Temporary vehicle spawning
 				const d = {
 					model: vehicleModel,
-					coord: misc.getPlayerCoordJSON(player),
+					coord: miscSingleton.getPlayerCoordJSON(player),
 					id: 0,
 					title: 'Pegassi Faggio',
 					fuel: 1,
@@ -22,11 +21,10 @@ class VehicleSingleton {
 					whoCanOpen: JSON.stringify([player.name]),
 					factionName: '',
 					numberPlate: this.generateRandomNumberPlate(),
-					primaryColor: JSON.stringify([misc.getRandomInt(0, 159), misc.getRandomInt(0, 159), misc.getRandomInt(0, 159)]),
-					secondaryColor: JSON.stringify([misc.getRandomInt(0, 159), misc.getRandomInt(0, 159), misc.getRandomInt(0, 159)]),
+					primaryColor: JSON.stringify([miscSingleton.getRandomInt(0, 159), miscSingleton.getRandomInt(0, 159), miscSingleton.getRandomInt(0, 159)]),
+					secondaryColor: JSON.stringify([miscSingleton.getRandomInt(0, 159), miscSingleton.getRandomInt(0, 159), miscSingleton.getRandomInt(0, 159)]),
 				}
 				new Vehicle(d);
-				misc.log.debug(`${player.name} spawned ${vehicleModel}`);
 			},
 
 			'tp': (player, fullText, a, b, c) => {
@@ -40,10 +38,9 @@ class VehicleSingleton {
 		const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		let number = '';
 		for (let i = 0; i < 8; i++) {
-			number += possible.charAt(misc.getRandomInt(0, possible.length));
+			number += possible.charAt(miscSingleton.getRandomInt(0, possible.length));
 		}
 		return number;
 	}
 }
-const vehicleSingleton = new VehicleSingleton();
-module.exports = vehicleSingleton;
+export const vehicleSingleton = new VehicleSingleton();

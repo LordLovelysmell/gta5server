@@ -7,3 +7,12 @@ ragemp-server.exe
 /dotnet
 /bin
 linux_x64.tar.gz
+
+.env*
+!.env.example
+
+# local env files
+.env.local
+.env.*.local
+
+/logs

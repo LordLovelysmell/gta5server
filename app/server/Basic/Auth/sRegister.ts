@@ -1,4 +1,4 @@
-const misc = require('../../helpers/sMisc')
+import { miscSingleton } from '@server/helpers/sMisc'
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -13,8 +13,8 @@ class Registration {
     const { login, password } = d
 
     const escapedData = {
-      login: misc.escape(login).replace(/\'/g, ''),
-      password: misc.escape(password)
+      login: miscSingleton.escape(login).replace(/\'/g, ''),
+      password: miscSingleton.escape(password)
     }
 
     const firstSpawn = {
@@ -27,21 +27,18 @@ class Registration {
 
     bcrypt.hash(password, saltRounds, async function (err: any, hash: string) {
       try {
-        const id = await misc.query('INSERT INTO player (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
+        const id = await miscSingleton.query('INSERT INTO player (login, password, ip, lastip, position, socialclub, regdate, lastdate) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
           [escapedData.login, hash, player.ip, player.ip, JSON.stringify(firstSpawn), player.socialClub])
 
         if (id) {
           player.setVariable('guid', id)
         }
         if (err) {
-          misc.log.debug('Error during creating account')
         }
       } catch (err) {
         console.error(err)
       }
     });
-
-    misc.log.debug(`New account created: ${login}`)
 
     player.call('cCharacterEditor-prepareCharacterEditor')
   }

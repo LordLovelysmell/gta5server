@@ -1,8 +1,6 @@
+import { miscSingleton } from '@server/helpers/sMisc'
 
-const misc = require('../../helpers/sMisc');
-
-
-class Vehicle {
+export default class Vehicle {
 	constructor(d) {
 		const pos = JSON.parse(d.coord);
 		const vehicle = mp.vehicles.new(d.model, new mp.Vector3(pos.x, pos.y, pos.z),
@@ -109,7 +107,7 @@ class Vehicle {
 		vehicle.sellToGovernment = async function (player) {
 			if (vehicle.ownerId !== player.guid) return;
 			player.addBankMoney(this.price / 2, `${i18n.get('sVehicle', 'sellVehicle', player.lang)}`);
-			await misc.query(`DELETE FROM vehicles WHERE id = ${vehicle.guid} AND ownerId = '${player.guid}' LIMIT 1`);
+			await miscSingleton.query(`DELETE FROM vehicles WHERE id = ${vehicle.guid} AND ownerId = '${player.guid}' LIMIT 1`);
 			this.destroy();
 		}
 
@@ -117,4 +115,3 @@ class Vehicle {
 	}
 
 }
-module.exports = Vehicle;
