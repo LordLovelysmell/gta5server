@@ -10,14 +10,14 @@ class ServerLogin {
 
     const response = await miscSingleton.query('SELECT id, login, password, position, socialclub FROM player WHERE login = ' + escapedLogin + ' LIMIT 1')
 
-    if (!response[0]) {
+    if (!response) {
       player.call("cLogin-sendAuthResponse", ["Данный аккаунт не существует."])
       return
     }
 
-    const { id, position } = response[0]
+    const { id, position } = response
 
-    bcrypt.compare(password, response[0].password, async function (err: any, isSamePassword: boolean) {
+    bcrypt.compare(password, response.password, async function (err: any, isSamePassword: boolean) {
       if (err) {
         console.error("bcrypt error - ", err)
       }

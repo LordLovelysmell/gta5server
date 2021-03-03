@@ -31,12 +31,12 @@ class sCharacterEditor {
     try {
       const response = await miscSingleton.query('SELECT character_id, gender, fatherId, motherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData FROM `character` WHERE playerId = ' + id + ' LIMIT 1')
 
-      if (!response[0]) {
+      if (!response) {
         console.log('Нет данных о персонаже с playerId = ', id)
         return
       }
 
-      const { gender, fatherId, motherId, skinMix, shapeMix } = response[0]
+      const { gender, fatherId, motherId, skinMix, shapeMix } = response
 
       // @ts-ignore
       player.model = data.freemodeSkins[gender]
@@ -52,7 +52,7 @@ class sCharacterEditor {
         skinMix,
         0)
 
-      const { faceFeatures, headOverlayData, componentVariationData } = response[0] // serialized data from db (as string)
+      const { faceFeatures, headOverlayData, componentVariationData } = response // serialized data from db (as string)
 
       const ff = JSON.parse(faceFeatures)
       for (let i = 0; i < 20; i++) {
@@ -83,7 +83,7 @@ class sCharacterEditor {
         }
       }
 
-      return response[0]
+      return response
     } catch (error) {
       console.error(error)
     }

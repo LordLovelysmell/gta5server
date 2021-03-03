@@ -1,11 +1,17 @@
+import { logger } from '@server/helpers/default.logger'
 import { miscSingleton } from '@server/helpers/sMisc'
 
 interface IBankCard {
+  bank_account_id?: number,
   bank_card_id: number,
-  bank_account_id: number,
   balance: number,
   pin_code: number,
   is_default: boolean
+}
+
+interface IBankAccount {
+  bank_account_id: number,
+  cards: IBankCard[]
 }
 
 class ATM {
@@ -47,34 +53,39 @@ class ATM {
       'sATM-withdrawOrDeposit': async (player, stringData) => {
         const characterId = player.getVariable('guid')
         const bankAccount = player.getVariable('bankAccount')
-        const defaultBankCard = bankAccount.cards.find((bankCard: IBankCard) => bankCard.is_default)
-        console.log('defaultBankCard: ', defaultBankCard)
-        const result = await miscSingleton.query('SELECT cash FROM `character` WHERE character_id = ?', [characterId])
-        const playerCash = Number(result[0].cash)
+        const bankCard = bankAccount.cards[0]
+        const { cash } = await miscSingleton.query('SELECT cash FROM `character` WHERE character_id = ?', [characterId])
+        const playerCash = Number(cash)
         const atmData: { amount: number, type: string } = JSON.parse(stringData)
 
-        if (atmData.type === 'withdrawal') {
-          if (Number(atmData.amount) > bankAccount.cards[0].balance) {
-            return player.notify('~r~На карте недостаточно средств.')
-          }
-          const playerBankCardNewBalance = defaultBankCard.balance - Number(atmData.amount)
+        // if (atmData.type === 'withdrawal') {
+        //   if (Number(atmData.amount) > bankCard.balance) {
+        //     return player.notify('~r~На карте недостаточно средств.')
+        //   }
+        //   const playerBankCardNewBalance = bankCard.balance - Number(atmData.amount)
 
-          await miscSingleton.query('UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id])
-          player.setVariable('cash', playerCash + Number(atmData.amount))
-        }
+        //   await miscSingleton.query('UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', [playerBankCardNewBalance, bankCard.bank_card_id])
+        //   player.setVariable('cash', playerCash + Number(atmData.amount))
+        // }
 
         if (atmData.type === 'deposit') {
           if (Number(atmData.amount) > playerCash) {
             return player.notify('~r~У вас нет столько наличных.')
           }
-          const playerBankCardNewBalance = defaultBankCard.balance + Number(atmData.amount)
+          const playerBankCardNewBalance = bankCard.balance + Number(atmData.amount)
           const playerCashNewBalance = playerCash - Number(atmData.amount)
 
-          const response = await miscSingleton.query('BEGIN TRANSACTION; UPDATE bank_card SET balance = ? WHERE bank_card_id = ?; UPDATE character SET cash = ? WHERE character_id = ?; COMMIT;', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id, playerCashNewBalance, characterId])
-          console.log(response)
-          bankAccount.cards[0].balance = playerBankCardNewBalance
-          player.setVariable('bankAccount', this.generateBankAccountObject(bankAccount))
-          player.setVariable('cash', playerCashNewBalance)
+          await miscSingleton.processTransactionQuery(
+            ['UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', 'UPDATE `character` SET cash = ? WHERE character_id = ?'],
+            [[playerBankCardNewBalance, bankCard.bank_card_id], [playerCashNewBalance, characterId]]
+          )
+
+          const updatedBankAccount = this.updateBankAccount(playerBankCardNewBalance)
+
+          // const updatedDefaultBankCard = Object.assign({}, defaultBankCard, { balance: playerBankCardNewBalance })
+
+          // player.setVariable('bankAccount', this.generateBankAccountObject({ bank_account_id: bankAccount.bank_account_id, cards:  }))
+          // player.setVariable('cash', playerCashNewBalance)
         }
       },
     })
@@ -83,10 +94,10 @@ class ATM {
   async loadPlayerBankAccount(player: PlayerMp) {
     // TODO: Implement multicard logic in future
     const result = await miscSingleton.query('SELECT * FROM `bank_card` WHERE is_default = 1 AND bank_account_id IN (SELECT bank_account_id FROM `bank_account` WHERE character_id = ?)', [player.getVariable('guid')])
-    return result[0]
+    return result
   }
 
-  generateBankAccountObject(bankAccount: IBankCard) {
+  generateBankAccountObject(bankAccount: IBankCard): IBankAccount {
     return {
       bank_account_id: Number(bankAccount.bank_account_id),
       cards: [
