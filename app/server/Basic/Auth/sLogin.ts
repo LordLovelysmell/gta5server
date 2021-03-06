@@ -1,23 +1,26 @@
 import { miscSingleton } from '@server/helpers/sMisc'
 import { characterEditor } from '../CharacterEditor/sCharacterEditor'
+import { Auth } from "@server/models/auth"
 
 const bcrypt = require('bcrypt')
 
-class ServerLogin {
-  async login(player: PlayerMp, loginData: string) {
+export class Login {
+  static async login(player: PlayerMp, loginData: string) {
     const { login, password } = JSON.parse(loginData)
     const escapedLogin = miscSingleton.escape(login)
 
-    const response = await miscSingleton.query('SELECT id, login, password, position, socialclub FROM player WHERE login = ' + escapedLogin + ' LIMIT 1')
+    const user = await Auth.fetchUserByLogin(escapedLogin)
 
-    if (!response) {
+    console.log(user)
+
+    if (!user) {
       player.call("cLogin-sendAuthResponse", ["Данный аккаунт не существует."])
       return
     }
 
-    const { id, position } = response
+    const { id, position } = user
 
-    bcrypt.compare(password, response.password, async function (err: any, isSamePassword: boolean) {
+    bcrypt.compare(password, user.password, async function (err: any, isSamePassword: boolean) {
       if (err) {
         console.error("bcrypt error - ", err)
       }
@@ -41,17 +44,3 @@ class ServerLogin {
     })
   }
 }
-
-const serverLogin = new ServerLogin()
-
-mp.events.add({
-  "playerReady": async (player) => {
-    player.spawn(new mp.Vector3(3222, 5376, 20))
-    player.dimension = player.id + 2000
-    player.call("cLogin-initLogin")
-  },
-
-  "sLogin-processLogin": async (player, obj) => {
-    serverLogin.login(player, obj)
-  },
-})

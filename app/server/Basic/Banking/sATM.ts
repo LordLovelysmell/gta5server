@@ -80,7 +80,7 @@ class ATM {
             [[playerBankCardNewBalance, bankCard.bank_card_id], [playerCashNewBalance, characterId]]
           )
 
-          const updatedBankAccount = this.updateBankAccount(playerBankCardNewBalance)
+          // const updatedBankAccount = this.updateBankAccount(playerBankCardNewBalance)
 
           // const updatedDefaultBankCard = Object.assign({}, defaultBankCard, { balance: playerBankCardNewBalance })
 

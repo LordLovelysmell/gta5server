@@ -73,11 +73,7 @@ export default {
       };
 
       // eslint-disable-next-line
-      mp.trigger(
-        "callServerEvent",
-        "sLogin-processLogin",
-        JSON.stringify(user)
-      );
+      mp.trigger("callServerEvent", "server/login/login", JSON.stringify(user));
     },
   },
 };

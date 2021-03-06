@@ -8,10 +8,13 @@
     "@vue/cli": "^4.5.9",
     "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
+    "fs": "0.0.1-security",
     "log4js": "^6.3.0",
-    "mysql": "^2.17.1",
     "mysql2": "^2.2.5",
-    "mysql2-promise": "^0.1.4"
+    "mysql2-promise": "^0.1.4",
+    "path": "^0.12.7",
+    "sequelize": "^6.5.0",
+    "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
     "@types/ragemp-c": "github:CocaColaBear/types-ragemp-c#master",

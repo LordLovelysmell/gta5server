@@ -9,12 +9,12 @@ const databaseConfig = {
 	database: 'gta5',
 }
 
-const connection = mysql.createPool(databaseConfig)
+const pool = mysql.createPool(databaseConfig)
 
 // NOTE! all mysql queries here is unsecure! You should wrap all the data with connection.escape(data);
 // More https://www.tizag.com/mysqlTutorial/mysql-php-sql-injection.php
 
-connection.getConnection()
+pool.getConnection()
 	.then((conn: any) => {
 		logger.info('Successfully connected to the database')
 		conn.release()
@@ -63,6 +63,6 @@ const processTransaction = async (queries: string[], queryValues: any[]) => {
 }
 
 export {
-	connection,
+	pool,
 	processTransaction
 }

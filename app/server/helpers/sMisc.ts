@@ -1,4 +1,4 @@
-import { connection, processTransaction } from '@server/helpers/sMysql'
+import { pool, processTransaction } from '@server/helpers/sMysql'
 import { logger } from '@server/helpers/default.logger'
 
 class MiscSingleton {
@@ -13,7 +13,7 @@ class MiscSingleton {
     //   }
     //   r(data)
     // }))
-    return connection.getConnection()
+    return pool.getConnection()
       .then((conn: any) => {
         const res = conn.query(query, parameters || null)
         conn.release()
@@ -53,7 +53,7 @@ class MiscSingleton {
   }
 
   escape(userData: string) {
-    return connection.escape(userData)
+    return pool.escape(userData)
   }
 
   getRandomInt(min = 0, max = 100) {

@@ -37,7 +37,10 @@ mp.events.add({
     //   mp.game.graphics.drawSprite("mphud", "mp_anim_cash", 0.5, 0.5, 0.1, 0.1, 0, 255, 255, 255, 100);
     // }
   },
-  'cLogin-initLogin': () => {
+  // 'cLogin-initLogin': () => {
+  //   camera.setActive(true)
+  // },
+  'client/login/init': () => {
     camera.setActive(true)
   },
   'cLogin-destroyLoginCamera': () => {
