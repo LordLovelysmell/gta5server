@@ -1,42 +1,45 @@
-import { miscSingleton } from '@server/helpers/sMisc'
+const models = require('@server/models')
 
 const data = {
   // @ts-ignore
   freemodeSkins: [mp.joaat("mp_m_freemode_01"), mp.joaat("mp_f_freemode_01")]
 }
 
-class sCharacterEditor {
-  constructor() {
-    mp.events.add({
-      "sCharacterEditor-saveCharacter": async (player, characterData) => {
-        await this.saveCharacter(player, characterData)
-        player.dimension = 0;
-      }
-    })
-  }
+export class CharacterEditor {
 
-  async saveCharacter(player: PlayerMp, characterData: string) {
-    const { gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlays, componentVariations } = JSON.parse(characterData)
+  static async saveCharacter(player: PlayerMp, jsonString: string) {
+    const { gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlays, componentVariations } = JSON.parse(jsonString)
 
     try {
-      await miscSingleton.query('INSERT INTO `character` (playerId, gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [player.getVariable('guid'), gender, motherId, fatherId, skinMix, shapeMix, JSON.stringify(faceFeatures), JSON.stringify(headOverlays), JSON.stringify(componentVariations)])
+      await models.character.create({
+        playerId: player.getVariable('guid'), // TODO: is there ways to get this with different approach ???
+        gender,
+        motherId,
+        fatherId,
+        skinMix,
+        shapeMix,
+        faceFeatures: JSON.stringify(faceFeatures),
+        headOverlayData: JSON.stringify(headOverlays),
+        componentVariationData: JSON.stringify(componentVariations),
+        cash: 0,
+      })
+
     } catch (err) {
       console.error(err)
     }
   }
 
-  async loadCharacter(player: PlayerMp) {
+  static async loadCharacter(player: PlayerMp) {
     const id = player.getVariable('guid')
     try {
-      const response = await miscSingleton.query('SELECT character_id, gender, fatherId, motherId, skinMix, shapeMix, faceFeatures, headOverlayData, componentVariationData FROM `character` WHERE playerId = ' + id + ' LIMIT 1')
+      const character = await models.character.findByPk(id)
 
-      if (!response) {
+      if (!character) {
         console.log('Нет данных о персонаже с playerId = ', id)
         return
       }
 
-      const { gender, fatherId, motherId, skinMix, shapeMix } = response
+      const { gender, fatherId, motherId, skinMix, shapeMix } = character
 
       // @ts-ignore
       player.model = data.freemodeSkins[gender]
@@ -52,7 +55,7 @@ class sCharacterEditor {
         skinMix,
         0)
 
-      const { faceFeatures, headOverlayData, componentVariationData } = response // serialized data from db (as string)
+      const { faceFeatures, headOverlayData, componentVariationData } = character // serialized data from db (as string)
 
       const ff = JSON.parse(faceFeatures)
       for (let i = 0; i < 20; i++) {
@@ -83,11 +86,9 @@ class sCharacterEditor {
         }
       }
 
-      return response
+      return character
     } catch (error) {
       console.error(error)
     }
   }
 }
-
-export const characterEditor = new sCharacterEditor();

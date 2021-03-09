@@ -37,9 +37,6 @@ mp.events.add({
     //   mp.game.graphics.drawSprite("mphud", "mp_anim_cash", 0.5, 0.5, 0.1, 0.1, 0, 255, 255, 255, 100);
     // }
   },
-  // 'cLogin-initLogin': () => {
-  //   camera.setActive(true)
-  // },
   'client/login/init': () => {
     camera.setActive(true)
   },
@@ -48,10 +45,10 @@ mp.events.add({
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
     browser.execute(`router.push({ name: 'main' })`)
   },
-  'cLogin-sendAuthResponse': (errorResponse) => {
+  'client/login/response': (errorResponse) => {
     browser.execute(`appData.commit('auth/setAlertMessage', '${errorResponse}');`)
   },
-  'cCharacterEditor-prepareCharacterEditor': () => {
+  'client/character-editor/prepare': () => {
     browser.setScreenState({ showChat: false, showCursor: true, showRadar: false, isBlurred: false })
     characterEditor.prepareCharacterEditor()
     browser.execute(`router.push({ name: 'character-editor' })`);

@@ -98,8 +98,8 @@ export class cCharacterEditor {
   }
 
   async saveCharacter() {
-    mp.events.callRemote('sCharacterEditor-saveCharacter', JSON.stringify(this.characterData))
-    this.player.position = new mp.Vector3(-164, 6426, 32);
+    mp.events.callRemote('server/basic/character-editor/save', JSON.stringify(this.characterData))
+    this.player.position = new mp.Vector3(-164, 6426, 32)
     this.player.freezePosition(false)
   }
 }

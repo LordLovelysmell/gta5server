@@ -1,5 +1,5 @@
-import { logger } from '@server/helpers/default.logger'
-import { miscSingleton } from '@server/helpers/sMisc'
+const models = require('@server/models')
+const { QueryTypes } = require('sequelize');
 
 interface IBankCard {
   bank_account_id?: number,
@@ -54,7 +54,7 @@ class ATM {
         const characterId = player.getVariable('guid')
         const bankAccount = player.getVariable('bankAccount')
         const bankCard = bankAccount.cards[0]
-        const { cash } = await miscSingleton.query('SELECT cash FROM `character` WHERE character_id = ?', [characterId])
+        const { cash } = await models.character.findByPk(characterId)
         const playerCash = Number(cash)
         const atmData: { amount: number, type: string } = JSON.parse(stringData)
 
@@ -75,10 +75,10 @@ class ATM {
           const playerBankCardNewBalance = bankCard.balance + Number(atmData.amount)
           const playerCashNewBalance = playerCash - Number(atmData.amount)
 
-          await miscSingleton.processTransactionQuery(
-            ['UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', 'UPDATE `character` SET cash = ? WHERE character_id = ?'],
-            [[playerBankCardNewBalance, bankCard.bank_card_id], [playerCashNewBalance, characterId]]
-          )
+          // await miscSingleton.processTransactionQuery(
+          //   ['UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', 'UPDATE `character` SET cash = ? WHERE character_id = ?'],
+          //   [[playerBankCardNewBalance, bankCard.bank_card_id], [playerCashNewBalance, characterId]]
+          // )
 
           // const updatedBankAccount = this.updateBankAccount(playerBankCardNewBalance)
 
@@ -93,8 +93,14 @@ class ATM {
 
   async loadPlayerBankAccount(player: PlayerMp) {
     // TODO: Implement multicard logic in future
-    const result = await miscSingleton.query('SELECT * FROM `bank_card` WHERE is_default = 1 AND bank_account_id IN (SELECT bank_account_id FROM `bank_account` WHERE character_id = ?)', [player.getVariable('guid')])
-    return result
+    // const result = await miscSingleton.query('SELECT * FROM `bank_card` WHERE is_default = 1 AND bank_account_id IN (SELECT bank_account_id FROM `bank_account` WHERE character_id = ?)', [player.getVariable('guid')])
+    const playerGuid = player.getVariable('guid')
+    const bankCard = await models.bankCard.query('SELECT * FROM bankcards WHERE isDefault = 1 AND bankAccountId IN (SELECT id FROM bankaccounts WHERE characterId = ?)', {
+      replacements: [playerGuid],
+      type: QueryTypes.SELECT
+    })
+
+    return bankCard
   }
 
   generateBankAccountObject(bankAccount: IBankCard): IBankAccount {

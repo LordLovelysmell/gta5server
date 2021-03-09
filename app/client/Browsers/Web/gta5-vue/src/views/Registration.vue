@@ -95,7 +95,7 @@ export default {
       // eslint-disable-next-line
       mp.trigger(
         "callServerEvent",
-        "sRegister-Register",
+        "server/basic/auth/signUp",
         JSON.stringify(user)
       );
     },
