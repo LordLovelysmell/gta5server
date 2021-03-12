@@ -1,17 +1,25 @@
+import App from '@server/core/app'
 import { logger } from '@server/helpers/default.logger'
 import EventListener from "@server/events/EventListener"
 
-const db = require('@server/models')
+const { sequelize } = require('@server/models')
 
-db.sequelize.sync().then((req: any) => {
-  new EventListener()
+const app = new App()
 
-  // require('./Basic/Auth/sRegister')
-  // require('./Basic/CharacterEditor/sCharacterEditor')
-  require('./Basic/Vehicle/sVehicleSingletone')
-  require('./Basic/Banking/sATM')
+app.listen(async () => {
+  logger.info('API accessible on port 5000')
+  await sequelize.authenticate().then((req: any) => {
+    logger.info('Database connected')
 
-  logger.info('Server started.')
+    new EventListener()
+
+    // require('./Basic/Auth/sRegister')
+    // require('./Basic/CharacterEditor/sCharacterEditor')
+    require('./Basic/Vehicle/sVehicleSingletone')
+    require('./Basic/Banking/sATM')
+
+    logger.info('All modules loaded')
+  })
 })
 
 

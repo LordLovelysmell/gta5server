@@ -1,50 +1,60 @@
 'use strict';
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('characters', {
+  up: async (queryInterface, DataTypes) => {
+    await queryInterface.createTable('Characters', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER
       },
       gender: {
-        type: Sequelize.TINYINT
+        type: DataTypes.TINYINT,
+        allowNull: false,
       },
       fatherId: {
-        type: Sequelize.TINYINT
+        type: DataTypes.TINYINT,
+        allowNull: false,
       },
       motherId: {
-        type: Sequelize.TINYINT
+        type: DataTypes.TINYINT,
+        allowNull: false,
       },
       skinMix: {
-        type: Sequelize.DECIMAL
+        type: DataTypes.DECIMAL,
+        allowNull: false,
       },
       shapeMix: {
-        type: Sequelize.DECIMAL
+        type: DataTypes.DECIMAL,
+        allowNull: false,
       },
       faceFeatures: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false,
       },
       headOverlayData: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false,
       },
       componentVariationData: {
-        type: Sequelize.TEXT
+        type: DataTypes.TEXT,
+        allowNull: false,
       },
       playerId: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       cash: {
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       }
     });
   },

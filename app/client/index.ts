@@ -80,12 +80,12 @@ mp.events.add({
       mp.game.cam.doScreenFadeIn(1000)
     }, 3500)
   },
-  'cATM-open': (serializedData: string) => {
+  'client/basic/ATM/open': (serializedData: string) => {
     browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
     browser.execute(`appData.commit('atm/setATMData', '${serializedData}');`)
     browser.execute(`router.push({ name: 'atm:login' })`)
   },
-  'cATM-loginProcess': (isPincodeCorrect: boolean) => {
+  'client/basic/ATM/login': (isPincodeCorrect: boolean) => {
     if (isPincodeCorrect) {
       browser.execute(`router.push({ name: 'atm:main-menu' })`)
     }

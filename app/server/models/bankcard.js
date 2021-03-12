@@ -3,30 +3,38 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class bankCard extends Model {
+  class BankCard extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate({ BankAccount }) {
       // define association here
+      this.belongsTo(BankAccount, { foreignKey: 'bankAccountId' })
     }
   };
-  bankCard.init({
+  BankCard.init({
     bankAccountId: {
       type: DataTypes.INTEGER,
-      // references: {
-      //   model: 'BankAccount',
-      //   key: 'id',
-      // }
+      allowNull: false,
     },
-    balance: DataTypes.INTEGER,
-    pinCode: DataTypes.INTEGER,
-    isDefault: DataTypes.BOOLEAN
+    balance: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    pinCode: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    isDefault: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    }
   }, {
     sequelize,
-    modelName: 'bankCard',
+    modelName: 'BankCard',
+    tableName: 'bank_cards'
   });
-  return bankCard;
+  return BankCard;
 };

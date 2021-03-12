@@ -1,4 +1,4 @@
-const models = require('@server/models')
+const { Character } = require('@server/models')
 
 const data = {
   // @ts-ignore
@@ -11,7 +11,7 @@ export class CharacterEditor {
     const { gender, motherId, fatherId, skinMix, shapeMix, faceFeatures, headOverlays, componentVariations } = JSON.parse(jsonString)
 
     try {
-      await models.character.create({
+      await Character.create({
         playerId: player.getVariable('guid'), // TODO: is there ways to get this with different approach ???
         gender,
         motherId,
@@ -32,7 +32,7 @@ export class CharacterEditor {
   static async loadCharacter(player: PlayerMp) {
     const id = player.getVariable('guid')
     try {
-      const character = await models.character.findByPk(id)
+      const character = await Character.findByPk(id)
 
       if (!character) {
         console.log('Нет данных о персонаже с playerId = ', id)

@@ -1,15 +1,14 @@
 import { CharacterEditor } from '@server/Basic/CharacterEditor/sCharacterEditor'
+import { logger } from '@server/helpers/default.logger'
 
 const bcrypt = require('bcrypt')
-const models = require('@server/models')
+const { Player } = require('@server/models')
 
 export class Auth {
   static async signIn(playerMp: PlayerMp, jsonString: string) {
     const { login, password } = JSON.parse(jsonString)
 
-    const player = await models.player.findOne({ where: { login } })
-
-    console.log(player)
+    const player = await Player.findOne({ where: { login } })
 
     if (!player) {
       playerMp.call("client/login/response", ["Данный аккаунт не существует."])
@@ -29,8 +28,14 @@ export class Auth {
 
         playerMp.setVariable('guid', character.id)
 
-        const { x, y, z } = JSON.parse(position)
-        playerMp.position = new mp.Vector3(x, y, z)
+        try {
+          logger.trace(position)
+          logger.trace('String:', '{test test test}')
+          const { x, y, z } = JSON.parse(position)
+          playerMp.position = new mp.Vector3(x, y, z)
+        } catch (err) {
+          console.log(err)
+        }
         playerMp.dimension = 0
 
         playerMp.call("cLogin-destroyLoginCamera")
@@ -59,7 +64,9 @@ export class Auth {
       try {
         const today = new Date(Date.now()).toUTCString()
 
-        const player = await models.player.create({
+        console.log(Player)
+
+        const player = await Player.create({
           login,
           password: hash,
           ip: playerMp.ip,

@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class character extends Model {
+  class Character extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,26 +13,51 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  character.init({
-    gender: DataTypes.TINYINT,
-    fatherId: DataTypes.TINYINT,
-    motherId: DataTypes.TINYINT,
-    skinMix: DataTypes.DECIMAL,
-    shapeMix: DataTypes.DECIMAL,
-    faceFeatures: DataTypes.TEXT,
-    headOverlayData: DataTypes.TEXT,
-    componentVariationData: DataTypes.TEXT,
+  Character.init({
+    gender: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
+    fatherId: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
+    motherId: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+    },
+    skinMix: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    shapeMix: {
+      type: DataTypes.DECIMAL,
+      allowNull: false,
+    },
+    faceFeatures: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    headOverlayData: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    componentVariationData: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
     playerId: {
       type: DataTypes.INTEGER,
-      // references: {
-      //   model: 'Player',
-      //   key: 'id',
-      // }
+      allowNull: false,
     },
-    cash: DataTypes.INTEGER
+    cash: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   }, {
     sequelize,
-    modelName: 'character',
+    modelName: 'Character',
+    tableName: 'characters'
   });
-  return character;
+  return Character;
 };
