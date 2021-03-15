@@ -110,6 +110,11 @@ export default {
   border: 0;
   outline: 0;
   transition: all 0.05s ease-in-out;
+  pointer-events: all;
+
+  &:hover {
+    background: #e2e2e2;
+  }
 
   &:active {
     background: #e2e2e2;

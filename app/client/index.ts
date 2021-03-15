@@ -81,9 +81,9 @@ mp.events.add({
     }, 3500)
   },
   'client/basic/ATM/open': (serializedData: string) => {
-    browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
     browser.execute(`appData.commit('atm/setATMData', '${serializedData}');`)
     browser.execute(`router.push({ name: 'atm:login' })`)
+    browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
   },
   'client/basic/ATM/login': (isPincodeCorrect: boolean) => {
     if (isPincodeCorrect) {

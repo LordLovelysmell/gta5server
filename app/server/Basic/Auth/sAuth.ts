@@ -29,12 +29,10 @@ export class Auth {
         playerMp.setVariable('guid', character.id)
 
         try {
-          logger.trace(position)
-          logger.trace('String:', '{test test test}')
           const { x, y, z } = JSON.parse(position)
           playerMp.position = new mp.Vector3(x, y, z)
         } catch (err) {
-          console.log(err)
+          console.error(err)
         }
         playerMp.dimension = 0
 

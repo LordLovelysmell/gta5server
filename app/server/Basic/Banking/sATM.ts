@@ -1,6 +1,5 @@
-const sequelize = require('sequelize')
 const { QueryTypes } = require('sequelize')
-const models = require('@server/models')
+const { BankCard, Character, sequelize } = require('@server/models')
 
 interface IBankCard {
   bank_account_id?: number,
@@ -65,7 +64,7 @@ class ATM {
 
           await sequelize.transaction(async (t: any) => {
 
-            await models.bankCard.update({
+            await BankCard.update({
               balance: bankCard.balance - atmData.amount
             }, {
               where: {
@@ -74,7 +73,7 @@ class ATM {
               transaction: t
             })
 
-            await models.character.update({
+            await Character.update({
               cash: bankCard.balance - atmData.amount
             }, {
               where: {
@@ -93,7 +92,7 @@ class ATM {
         }
       },
       'server/basic/ATM/deposit': async (player, jsonString) => {
-        // const { cash } = await models.character.findByPk(characterId)
+        // const { cash } = await Character.findByPk(characterId)
         // if (Number(atmData.amount) > playerCash) {
         //   return player.notify('~r~У вас нет столько наличных.')
         // }
@@ -118,7 +117,7 @@ class ATM {
   async loadPlayerBankCard(player: PlayerMp) {
     // TODO: Implement multicard logic in future
     const playerGuid = player.getVariable('guid')
-    const bankCard = await models.bankCard.query('SELECT * FROM bankcards WHERE isDefault = 1 AND bankAccountId IN (SELECT id FROM bankaccounts WHERE characterId = ?)', {
+    const bankCard = await sequelize.query('SELECT * FROM bankcards WHERE isDefault = 1 AND bankAccountId IN (SELECT id FROM bankaccounts WHERE characterId = ?)', {
       replacements: [playerGuid],
       type: QueryTypes.SELECT
     })

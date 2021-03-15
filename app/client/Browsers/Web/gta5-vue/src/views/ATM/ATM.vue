@@ -55,7 +55,6 @@ export default {
       mp.trigger("callServerEvent", "sATM-topUp", this.sum);
     },
     close() {
-      console.log("test");
       this.$router.push({ name: "main" });
 
       if (!this.$appConfig.isDev) {
