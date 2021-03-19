@@ -13,7 +13,9 @@ const camera = new Camera({
   fov: 30
 })
 
-const characterEditor = new cCharacterEditor(mp.players.local)
+const localPlayer = mp.players.local
+
+const characterEditor = new cCharacterEditor(localPlayer)
 
 mp.events.add({
   "render": () => {
@@ -36,6 +38,14 @@ mp.events.add({
     // if (mp.game.graphics.hasStreamedTextureDictLoaded("mphud")) {
     //   mp.game.graphics.drawSprite("mphud", "mp_anim_cash", 0.5, 0.5, 0.1, 0.1, 0, 255, 255, 255, 100);
     // }
+
+    mp.game.graphics.drawText(`X: ${localPlayer.position.x.toFixed(4)}, Y: ${localPlayer.position.y.toFixed(4)}, Z: ${localPlayer.position.z.toFixed(4)}, heading: ${localPlayer.getHeading().toFixed(2)} degrees`, [0.5, 0.95], {
+      font: 0,
+      color: [255, 255, 255, 185],
+      scale: [0.3, 0.3],
+      outline: false,
+      centre: true
+    })
   },
   'client/login/init': () => {
     camera.setActive(true)
@@ -44,6 +54,13 @@ mp.events.add({
     camera.destroy()
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
     browser.execute(`router.push({ name: 'main' })`)
+
+    mp.peds.new(
+      mp.game.joaat('a_f_y_business_04'), // Business woman
+      new mp.Vector3(-111.0377, 6470.2197, 31.6267), // Blane County Savings Bank (Plaeto Bay)
+      131.50, // rotation
+      0 // dimension
+    );
   },
   'client/login/response': (errorResponse) => {
     browser.execute(`appData.commit('auth/setAlertMessage', '${errorResponse}');`)
