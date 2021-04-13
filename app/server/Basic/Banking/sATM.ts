@@ -1,4 +1,5 @@
-const { QueryTypes } = require('sequelize')
+import { loadPlayerBankCard } from '@server/Basic/Banking/loadPlayerBankCard'
+
 const { BankCard, Character, sequelize } = require('@server/models')
 
 interface IBankCard {
@@ -17,33 +18,9 @@ interface IBankAccount {
 class ATM {
   constructor() {
     mp.events.add({
-      "playerEnterColshape": (player: PlayerMp, shape: ColshapeMp) => {
-        if (player.vehicle || !shape.getVariable('isATM')) return
-        player.setVariable('canOpenATM', true)
-        player.notify('Нажмите ~b~E~s~, чтобы вставить карту в банкомат')
-      },
-      "playerExitColshape": (player, shape) => {
-        if (!shape.getVariable('isATM')) return
-        player.setVariable('canOpenATM', false)
-        player.call('hideCursor')
-      },
-      "sKeys-E": async (player) => {
-        try {
-          if (!player.getVariable('canOpenATM')) return
-
-          const bankCard = await this.loadPlayerBankCard(player)
-          if (!bankCard) {
-            return player.notify('~s~У Вас отсутствует банковская карта. Откройте счет в банке или восстановите утерянную карту.')
-          }
-          // TODO: Implement multicard logic in future
-          player.call('client/basic/ATM/open', [JSON.stringify(bankCard)])
-        } catch (err) {
-          console.error(err)
-        }
-      },
       'server/basic/ATM/login': async (player, stringData) => {
         try {
-          const bankCard = await this.loadPlayerBankCard(player)
+          const bankCard = await loadPlayerBankCard(player)
           // TODO: Implement multicard logic in future
           player.call('client/basic/ATM/login', [parseInt(bankCard.pinCode) === parseInt(JSON.parse(stringData).pin)])
         } catch (err) {
@@ -56,7 +33,7 @@ class ATM {
           const characterId = player.getVariable('guid')
           const atmData: { amount: number, type: string } = JSON.parse(jsonString)
 
-          const bankCard = await this.loadPlayerBankCard(player)
+          const bankCard = await loadPlayerBankCard(player)
 
           if (atmData.amount > bankCard.balance) {
             return player.notify('~r~На карте недостаточно средств.')
@@ -114,17 +91,6 @@ class ATM {
     })
   }
 
-  async loadPlayerBankCard(player: PlayerMp) {
-    // TODO: Implement multicard logic in future
-    const playerGuid = player.getVariable('guid')
-    const bankCard = await sequelize.query('SELECT * FROM bankcards WHERE isDefault = 1 AND bankAccountId IN (SELECT id FROM bankaccounts WHERE characterId = ?)', {
-      replacements: [playerGuid],
-      type: QueryTypes.SELECT
-    })
-
-    return bankCard
-  }
-
   generateBankAccountObject(bankAccount: IBankCard): IBankAccount {
     return {
       bank_account_id: Number(bankAccount.bank_account_id),
@@ -141,7 +107,7 @@ class ATM {
 
   createATMByCoords(x: number, y: number, z: number) {
     const shape = mp.colshapes.newSphere(x, y, z, 0.5);
-    shape.setVariable('isATM', true)
+    shape.customData = Object.assign({}, shape.customData, { isAttachedToATM: true })
     mp.blips.new(500, new mp.Vector3(x, y, z),
       {
         name: "ATM",

@@ -34,6 +34,8 @@ export default {
       if (!this.$appConfig.isDev) {
         // eslint-disable-next-line
         mp.trigger("hideCursor");
+        // eslint-disable-next-line
+        mp.trigger("client/close-main-cef");
       }
     },
     onNumericNumpadButtonPress(number) {

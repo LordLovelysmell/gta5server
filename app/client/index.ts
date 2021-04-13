@@ -1,8 +1,11 @@
 require('./helpers/cKeys')
 
+import registerEvents from '@client/events/eventsController'
 import { Browser } from './Basic/Browser'
 import { Camera } from './Basic/Camera'
 import { cCharacterEditor } from './Basic/cCharacterEditor'
+
+registerEvents()
 
 const browser = new Browser({ url: 'package://RP/Browsers/index.html' })
 
@@ -54,13 +57,6 @@ mp.events.add({
     camera.destroy()
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
     browser.execute(`router.push({ name: 'main' })`)
-
-    mp.peds.new(
-      mp.game.joaat('a_f_y_business_04'), // Business woman
-      new mp.Vector3(-111.0377, 6470.2197, 31.6267), // Blane County Savings Bank (Plaeto Bay)
-      131.50, // rotation
-      0 // dimension
-    );
   },
   'client/login/response': (errorResponse) => {
     browser.execute(`appData.commit('auth/setAlertMessage', '${errorResponse}');`)
@@ -109,6 +105,9 @@ mp.events.add({
   },
   'hideCursor': () => {
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: false, isBlurred: false })
+  },
+  'client/close-main-cef': () => {
+    browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
   },
   'callServerEvent': (eventName, data) => {
     mp.events.callRemote(eventName, data)

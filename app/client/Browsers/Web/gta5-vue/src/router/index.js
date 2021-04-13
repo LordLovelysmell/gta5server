@@ -28,6 +28,12 @@ const routes = [
         component: () =>
           import( /* webpackChunkName: "character-editor" */ '../views/CharacterEditor.vue')
       },
+      {
+        path: "/dialogue",
+        name: "dialogue",
+        component: () =>
+          import( /* webpackChunkName: "dialogue" */ '../views/Dialogue.vue')
+      }
     ],
   },
   {

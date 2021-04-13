@@ -29,8 +29,15 @@ export class Auth {
         playerMp.setVariable('guid', character.id)
 
         try {
-          const { x, y, z } = JSON.parse(position)
-          playerMp.position = new mp.Vector3(x, y, z)
+          // const { x, y, z } = JSON.parse(position)
+          const firstSpawn = {
+            x: -112,
+            y: 6468,
+            z: 32,
+            rot: 326,
+            dim: 0,
+          }
+          playerMp.position = new mp.Vector3(firstSpawn.x, firstSpawn.y, firstSpawn.z)
         } catch (err) {
           console.error(err)
         }
@@ -49,11 +56,19 @@ export class Auth {
 
     const { login, password } = JSON.parse(jsonString)
 
+    // const firstSpawn = {
+    //   x: -164,
+    //   y: 6426,
+    //   z: 32,
+    //   rot: 48,
+    //   dim: 0,
+    // }
+
     const firstSpawn = {
-      x: -164,
-      y: 6426,
+      x: -112,
+      y: 6468,
       z: 32,
-      rot: 48,
+      rot: 326,
       dim: 0,
     }
 
