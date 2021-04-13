@@ -1,92 +1,97 @@
-import { miscSingleton } from '@server/helpers/sMisc'
+import { loadPlayerBankCard } from '@server/Basic/Banking/loadPlayerBankCard'
+
+const { BankCard, Character, sequelize } = require('@server/models')
 
 interface IBankCard {
+  bank_account_id?: number,
   bank_card_id: number,
-  bank_account_id: number,
   balance: number,
   pin_code: number,
   is_default: boolean
 }
 
+interface IBankAccount {
+  bank_account_id: number,
+  cards: IBankCard[]
+}
+
 class ATM {
   constructor() {
     mp.events.add({
-      "playerEnterColshape": (player: PlayerMp, shape: ColshapeMp) => {
-        if (player.vehicle || !shape.getVariable('isATM')) return
-        player.setVariable('canOpenATM', true)
-        player.notify('Нажмите ~b~E~s~, чтобы вставить карту в банкомат')
-      },
-      "playerExitColshape": (player, shape) => {
-        if (!shape.getVariable('isATM')) return
-        player.setVariable('canOpenATM', false)
-        player.call('hideCursor')
-      },
-      "sKeys-E": async (player) => {
-        if (!player.getVariable('canOpenATM')) return
-        let bankAccount = player.getVariable('bankAccount')
-        if (!bankAccount || !bankAccount.cards || !bankAccount.cards.length) {
-          bankAccount = await this.loadPlayerBankAccount(player)
-          if (!bankAccount) {
-            return player.notify('~s~У Вас отсутствует банковская карта. Откройте счет в банке или восстановите утерянную карту.')
-          }
-          // TODO: Implement multicard logic in future
-          player.setVariable('bankAccount', this.generateBankAccountObject(bankAccount))
-        }
-        player.call('cATM-open', [JSON.stringify(bankAccount)])
-      },
-      'sATM-login': async (player, stringData) => {
+      'server/basic/ATM/login': async (player, stringData) => {
         try {
-          let bankAccount = player.getVariable('bankAccount')
+          const bankCard = await loadPlayerBankCard(player)
           // TODO: Implement multicard logic in future
-          player.call('cATM-loginProcess', [parseInt(bankAccount.cards[0].pin_code) === parseInt(JSON.parse(stringData).pin)])
+          player.call('client/basic/ATM/login', [parseInt(bankCard.pinCode) === parseInt(JSON.parse(stringData).pin)])
         } catch (err) {
           console.error(err)
-          player.notify('~r~Кажется, что банкомат не работает. ~s~Пожалуйста, попробуйте позже.')
+          player.notify('~r~Банкомат не работает. ~s~Пожалуйста, попробуйте позже.')
         }
       },
-      'sATM-withdrawOrDeposit': async (player, stringData) => {
-        const characterId = player.getVariable('guid')
-        const bankAccount = player.getVariable('bankAccount')
-        const defaultBankCard = bankAccount.cards.find((bankCard: IBankCard) => bankCard.is_default)
-        console.log('defaultBankCard: ', defaultBankCard)
-        const result = await miscSingleton.query('SELECT cash FROM `character` WHERE character_id = ?', [characterId])
-        const playerCash = Number(result[0].cash)
-        const atmData: { amount: number, type: string } = JSON.parse(stringData)
+      'server/basic/ATM/withdraw': async (player, jsonString) => {
+        try {
+          const characterId = player.getVariable('guid')
+          const atmData: { amount: number, type: string } = JSON.parse(jsonString)
 
-        if (atmData.type === 'withdrawal') {
-          if (Number(atmData.amount) > bankAccount.cards[0].balance) {
+          const bankCard = await loadPlayerBankCard(player)
+
+          if (atmData.amount > bankCard.balance) {
             return player.notify('~r~На карте недостаточно средств.')
           }
-          const playerBankCardNewBalance = defaultBankCard.balance - Number(atmData.amount)
 
-          await miscSingleton.query('UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id])
-          player.setVariable('cash', playerCash + Number(atmData.amount))
-        }
+          await sequelize.transaction(async (t: any) => {
 
-        if (atmData.type === 'deposit') {
-          if (Number(atmData.amount) > playerCash) {
-            return player.notify('~r~У вас нет столько наличных.')
-          }
-          const playerBankCardNewBalance = defaultBankCard.balance + Number(atmData.amount)
-          const playerCashNewBalance = playerCash - Number(atmData.amount)
+            await BankCard.update({
+              balance: bankCard.balance - atmData.amount
+            }, {
+              where: {
+                id: bankCard.id
+              },
+              transaction: t
+            })
 
-          const response = await miscSingleton.query('BEGIN TRANSACTION; UPDATE bank_card SET balance = ? WHERE bank_card_id = ?; UPDATE character SET cash = ? WHERE character_id = ?; COMMIT;', [playerBankCardNewBalance, bankAccount.cards[0].bank_card_id, playerCashNewBalance, characterId])
-          console.log(response)
-          bankAccount.cards[0].balance = playerBankCardNewBalance
-          player.setVariable('bankAccount', this.generateBankAccountObject(bankAccount))
-          player.setVariable('cash', playerCashNewBalance)
+            await Character.update({
+              cash: bankCard.balance - atmData.amount
+            }, {
+              where: {
+                id: characterId
+              },
+              transaction: t
+            })
+
+          })
+
+          // TODO: call client-side event to display player current cash
+          // player.setVariable('cash', playerCash + Number(atmData.amount))
+        } catch (err) {
+          console.error(err)
+          return player.call('client/basic/ATM/error')
         }
       },
+      'server/basic/ATM/deposit': async (player, jsonString) => {
+        // const { cash } = await Character.findByPk(characterId)
+        // if (Number(atmData.amount) > playerCash) {
+        //   return player.notify('~r~У вас нет столько наличных.')
+        // }
+        // const playerBankCardNewBalance = bankCard.balance + Number(atmData.amount)
+        // const playerCashNewBalance = playerCash - Number(atmData.amount)
+
+        // await miscSingleton.processTransactionQuery(
+        //   ['UPDATE bank_card SET balance = ? WHERE bank_card_id = ?', 'UPDATE `character` SET cash = ? WHERE character_id = ?'],
+        //   [[playerBankCardNewBalance, bankCard.bank_card_id], [playerCashNewBalance, characterId]]
+        // )
+
+        // const updatedBankAccount = this.updateBankAccount(playerBankCardNewBalance)
+
+        // const updatedDefaultBankCard = Object.assign({}, defaultBankCard, { balance: playerBankCardNewBalance })
+
+        // player.setVariable('bankAccount', this.generateBankAccountObject({ bank_account_id: bankAccount.bank_account_id, cards:  }))
+        // player.setVariable('cash', playerCashNewBalance)
+      }
     })
   }
 
-  async loadPlayerBankAccount(player: PlayerMp) {
-    // TODO: Implement multicard logic in future
-    const result = await miscSingleton.query('SELECT * FROM `bank_card` WHERE is_default = 1 AND bank_account_id IN (SELECT bank_account_id FROM `bank_account` WHERE character_id = ?)', [player.getVariable('guid')])
-    return result[0]
-  }
-
-  generateBankAccountObject(bankAccount: IBankCard) {
+  generateBankAccountObject(bankAccount: IBankCard): IBankAccount {
     return {
       bank_account_id: Number(bankAccount.bank_account_id),
       cards: [
@@ -102,7 +107,7 @@ class ATM {
 
   createATMByCoords(x: number, y: number, z: number) {
     const shape = mp.colshapes.newSphere(x, y, z, 0.5);
-    shape.setVariable('isATM', true)
+    shape.customData = Object.assign({}, shape.customData, { isAttachedToATM: true })
     mp.blips.new(500, new mp.Vector3(x, y, z),
       {
         name: "ATM",

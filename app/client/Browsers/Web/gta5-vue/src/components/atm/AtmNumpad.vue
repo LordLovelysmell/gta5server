@@ -56,7 +56,7 @@ export default {
           // eslint-disable-next-line
           mp.trigger(
             "callServerEvent",
-            "sATM-login",
+            "server/basic/ATM/login",
             JSON.stringify({
               pin: this.currentNumpadInput,
             })
@@ -66,18 +66,14 @@ export default {
         }
       }
 
-      if (
-        this.$route.name === "atm:withdrawal" ||
-        this.$route.name === "atm:deposit"
-      ) {
+      if (this.$route.name === "atm:withdrawal") {
         if (!this.$appConfig.isDev) {
           // eslint-disable-next-line
           mp.trigger(
             "callServerEvent",
-            "sATM-withdrawOrDeposit",
+            "server/basic/ATM/withdraw",
             JSON.stringify({
               amount: this.currentNumpadInput,
-              type: this.$route.name.split(":")[1],
             })
           );
         }
@@ -114,6 +110,11 @@ export default {
   border: 0;
   outline: 0;
   transition: all 0.05s ease-in-out;
+  pointer-events: all;
+
+  &:hover {
+    background: #e2e2e2;
+  }
 
   &:active {
     background: #e2e2e2;

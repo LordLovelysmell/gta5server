@@ -1,8 +1,11 @@
 require('./helpers/cKeys')
 
+import registerEvents from '@client/events/eventsController'
 import { Browser } from './Basic/Browser'
 import { Camera } from './Basic/Camera'
 import { cCharacterEditor } from './Basic/cCharacterEditor'
+
+registerEvents()
 
 const browser = new Browser({ url: 'package://RP/Browsers/index.html' })
 
@@ -13,7 +16,9 @@ const camera = new Camera({
   fov: 30
 })
 
-const characterEditor = new cCharacterEditor(mp.players.local)
+const localPlayer = mp.players.local
+
+const characterEditor = new cCharacterEditor(localPlayer)
 
 mp.events.add({
   "render": () => {
@@ -36,8 +41,16 @@ mp.events.add({
     // if (mp.game.graphics.hasStreamedTextureDictLoaded("mphud")) {
     //   mp.game.graphics.drawSprite("mphud", "mp_anim_cash", 0.5, 0.5, 0.1, 0.1, 0, 255, 255, 255, 100);
     // }
+
+    mp.game.graphics.drawText(`X: ${localPlayer.position.x.toFixed(4)}, Y: ${localPlayer.position.y.toFixed(4)}, Z: ${localPlayer.position.z.toFixed(4)}, heading: ${localPlayer.getHeading().toFixed(2)} degrees`, [0.5, 0.95], {
+      font: 0,
+      color: [255, 255, 255, 185],
+      scale: [0.3, 0.3],
+      outline: false,
+      centre: true
+    })
   },
-  'cLogin-initLogin': () => {
+  'client/login/init': () => {
     camera.setActive(true)
   },
   'cLogin-destroyLoginCamera': () => {
@@ -45,10 +58,10 @@ mp.events.add({
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
     browser.execute(`router.push({ name: 'main' })`)
   },
-  'cLogin-sendAuthResponse': (errorResponse) => {
+  'client/login/response': (errorResponse) => {
     browser.execute(`appData.commit('auth/setAlertMessage', '${errorResponse}');`)
   },
-  'cCharacterEditor-prepareCharacterEditor': () => {
+  'client/character-editor/prepare': () => {
     browser.setScreenState({ showChat: false, showCursor: true, showRadar: false, isBlurred: false })
     characterEditor.prepareCharacterEditor()
     browser.execute(`router.push({ name: 'character-editor' })`);
@@ -80,18 +93,21 @@ mp.events.add({
       mp.game.cam.doScreenFadeIn(1000)
     }, 3500)
   },
-  'cATM-open': (serializedData: string) => {
-    browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
+  'client/basic/ATM/open': (serializedData: string) => {
     browser.execute(`appData.commit('atm/setATMData', '${serializedData}');`)
     browser.execute(`router.push({ name: 'atm:login' })`)
+    browser.setScreenState({ showChat: true, showCursor: true, showRadar: false, isBlurred: false })
   },
-  'cATM-loginProcess': (isPincodeCorrect: boolean) => {
+  'client/basic/ATM/login': (isPincodeCorrect: boolean) => {
     if (isPincodeCorrect) {
       browser.execute(`router.push({ name: 'atm:main-menu' })`)
     }
   },
   'hideCursor': () => {
     browser.setScreenState({ showChat: true, showCursor: false, showRadar: false, isBlurred: false })
+  },
+  'client/close-main-cef': () => {
+    browser.setScreenState({ showChat: true, showCursor: false, showRadar: true, isBlurred: false })
   },
   'callServerEvent': (eventName, data) => {
     mp.events.callRemote(eventName, data)

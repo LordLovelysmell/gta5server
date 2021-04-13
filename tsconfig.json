@@ -15,10 +15,15 @@
       ],
       "@server/*": [
         "app/server/*"
+      ],
+      "@client/*": [
+        "app/client/*"
       ]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   }
 }

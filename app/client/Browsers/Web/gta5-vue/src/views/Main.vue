@@ -16,11 +16,13 @@ export default {
 <style lang="scss" scoped>
 .main {
   padding: 20px;
+  height: 100vh;
 }
 .logo {
   top: 15px;
   right: 30px;
   max-width: 100px;
+  pointer-events: none;
 
   img {
     width: 100%;

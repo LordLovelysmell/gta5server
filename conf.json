@@ -6,5 +6,6 @@
 	"announce": false,
 	"csharp": "disabled",
 	"port": 22005,
-	"node-commandline-flags": "--inspect"
+	"node-commandline-flags": "-r dotenv/config --inspect",
+	"allow-cef-debugging": true
 }

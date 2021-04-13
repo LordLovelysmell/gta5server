@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import auth from './auth.js';
 import atm from './atm.js';
+import dialogue from './dialogue.js'
 
 export default createStore({
   state: {},
@@ -8,6 +9,7 @@ export default createStore({
   actions: {},
   modules: {
     auth,
-    atm
+    atm,
+    dialogue
   }
 });

@@ -75,7 +75,7 @@ export default {
       // eslint-disable-next-line
       mp.trigger(
         "callServerEvent",
-        "sLogin-processLogin",
+        "server/basic/auth/signIn",
         JSON.stringify(user)
       );
     },
