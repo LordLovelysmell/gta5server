@@ -6,7 +6,7 @@ const module = {
     statusF3: false,
     clothes: null,
     activeModal: null,
-    modalData: null
+    modalData: null,
   },
   mutations: {
     setHudStatus(state, level) {
@@ -32,8 +32,8 @@ const module = {
       state.modalData = null;
       state.activeModal = null;
       mp.trigger("disableModals");
-    }
+    },
   },
-}
+};
 
 export default module;

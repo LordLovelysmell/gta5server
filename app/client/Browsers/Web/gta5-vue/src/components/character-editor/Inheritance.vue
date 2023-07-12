@@ -36,12 +36,12 @@ export default {
   computed: {
     mothers() {
       return parents.mothers.map((mother) =>
-        Object.assign({}, mother, { type: "mother" })
+        Object.assign({}, mother, { type: "mother" }),
       );
     },
     fathers() {
       return parents.fathers.map((father) =>
-        Object.assign({}, father, { type: "father" })
+        Object.assign({}, father, { type: "father" }),
       );
     },
     parentImageSrc() {
@@ -66,7 +66,7 @@ export default {
       this.currentOption[option.type] = option;
       this.$emit(
         "option-change",
-        Object.assign({}, option, { type: `${option.type}Id` })
+        Object.assign({}, option, { type: `${option.type}Id` }),
       );
     },
   },

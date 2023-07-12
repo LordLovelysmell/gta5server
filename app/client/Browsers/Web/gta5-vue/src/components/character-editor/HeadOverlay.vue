@@ -176,7 +176,7 @@ export default {
           {
             overlayId: option.id,
             index: option.chosenOption,
-          }
+          },
         );
       }
       if (option.type === "opacity") {
@@ -185,7 +185,7 @@ export default {
           this.headOverlayData[option.index],
           {
             opacity: option.value,
-          }
+          },
         );
       }
 

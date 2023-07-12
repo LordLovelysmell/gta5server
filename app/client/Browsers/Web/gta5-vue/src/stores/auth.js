@@ -10,9 +10,9 @@ const module = {
   },
   getters: {
     getAlertMessage(state) {
-      return state.alertMessage
-    }
-  }
-}
+      return state.alertMessage;
+    },
+  },
+};
 
-export default module
+export default module;

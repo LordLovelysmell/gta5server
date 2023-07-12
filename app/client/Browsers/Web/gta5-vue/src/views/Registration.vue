@@ -96,7 +96,7 @@ export default {
       mp.trigger(
         "callServerEvent",
         "server/basic/auth/signUp",
-        JSON.stringify(user)
+        JSON.stringify(user),
       );
     },
     defineValidityClass() {

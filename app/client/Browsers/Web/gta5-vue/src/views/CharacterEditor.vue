@@ -71,7 +71,10 @@
           </div>
         </div>
         <div class="step-wrapper" v-show="currentStep === 2">
-          <head-overlay @head-overlay-data-set="onOptionChange" :gender="character.gender" />
+          <head-overlay
+            @head-overlay-data-set="onOptionChange"
+            :gender="character.gender"
+          />
         </div>
         <div class="step-wrapper" v-show="currentStep === 3">
           <base-selector
@@ -280,19 +283,17 @@ export default {
         };
         let existedVariationIndex = undefined;
         if (this.character.componentVariationData.length) {
-          existedVariationIndex = this.character.componentVariationData.findIndex(
-            (variation) => {
+          existedVariationIndex =
+            this.character.componentVariationData.findIndex((variation) => {
               return variation.componentId === option.id;
-            }
-          );
+            });
         }
         if (
           existedVariationIndex !== undefined &&
           existedVariationIndex !== -1
         ) {
-          this.character.componentVariationData[
-            existedVariationIndex
-          ] = variationObject;
+          this.character.componentVariationData[existedVariationIndex] =
+            variationObject;
         } else {
           this.character.componentVariationData.push(variationObject);
         }
@@ -306,7 +307,7 @@ export default {
         // eslint-disable-next-line
         mp.trigger(
           "cCharacterEditor-updateCharacter",
-          JSON.stringify(this.character)
+          JSON.stringify(this.character),
         );
       }
     },

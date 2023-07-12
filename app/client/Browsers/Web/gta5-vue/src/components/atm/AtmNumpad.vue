@@ -59,7 +59,7 @@ export default {
             "server/basic/ATM/login",
             JSON.stringify({
               pin: this.currentNumpadInput,
-            })
+            }),
           );
         } else {
           this.$router.push({ name: "atm:main-menu" });
@@ -74,7 +74,7 @@ export default {
             "server/basic/ATM/withdraw",
             JSON.stringify({
               amount: this.currentNumpadInput,
-            })
+            }),
           );
         }
       }

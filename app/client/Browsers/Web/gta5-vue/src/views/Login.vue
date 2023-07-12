@@ -76,7 +76,7 @@ export default {
       mp.trigger(
         "callServerEvent",
         "server/basic/auth/signIn",
-        JSON.stringify(user)
+        JSON.stringify(user),
       );
     },
   },

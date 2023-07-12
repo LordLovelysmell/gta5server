@@ -65,7 +65,7 @@ export default {
           JSON.stringify({
             currentInput: this.currentInput,
             currentComponent: this.currentComponent,
-          })
+          }),
         );
       }
     },
